@@ -1,4 +1,9 @@
 <?php
+
+namespace DOMPDF\Canvas;
+
+use DOMPDF\DOMPDF;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -14,8 +19,8 @@
  *
  * @package dompdf
  */
-class Canvas_Factory {
-
+class Factory
+{
   /**
    * Constructor is private: this is a static class
    */

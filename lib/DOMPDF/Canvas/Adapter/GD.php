@@ -2,7 +2,10 @@
 
 namespace DOMPDF\Canvas\Adapter;
 
+use DOMPDF\DOMPDF;
 use DOMPDF\Canvas\Canvas;
+use DOMPDF\Canvas\Adapter\CPDF;
+use DOMPDF\Image\Cache as ImageCache;
 
 /**
  * @package dompdf
@@ -97,11 +100,11 @@ class GD implements Canvas
     if ( !is_array($size) ) {
       $size = strtolower($size);
       
-      if ( isset(CPDF_Adapter::$PAPER_SIZES[$size]) ) {
-        $size = CPDF_Adapter::$PAPER_SIZES[$size];
+      if ( isset(CPDF::$PAPER_SIZES[$size]) ) {
+        $size = CPDF::$PAPER_SIZES[$size];
       }
       else {
-        $size = CPDF_Adapter::$PAPER_SIZES["letter"];
+        $size = CPDF::$PAPER_SIZES["letter"];
       }
     }
 
@@ -559,8 +562,8 @@ class GD implements Canvas
    * @internal param string $img_type the type (e.g. extension) of the image
    */
   function image($img_url, $x, $y, $w, $h, $resolution = "normal") {
-    $img_type = Image_Cache::detect_type($img_url);
-    $img_ext  = Image_Cache::type_to_ext($img_type);
+    $img_type = ImageCache::detect_type($img_url);
+    $img_ext  = ImageCache::type_to_ext($img_type);
 
     if ( !$img_ext ) {
       return;

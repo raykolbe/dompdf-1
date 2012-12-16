@@ -2,7 +2,13 @@
 
 namespace DOMPDF\Canvas\Adapter;
 
+use DOMPDF\DOMPDF;
 use DOMPDF\Canvas\Canvas;
+use DOMPDF\Font\Metrics as FontMetrics;
+use DOMPDF\Exception;
+use DOMPDF\Image\Cache as ImageCache;
+use DOMPDF\Renderer\PHPEvaluator;
+use DOMPDF\Canvas\Adapter\PDFLib;
 
 /**
  * @package dompdf
@@ -203,7 +209,7 @@ class PDFLib implements Canvas
     $this->_objs = array();
 
     // Set up font paths
-    $families = Font_Metrics::get_font_families();
+    $families = FontMetrics::get_font_families();
     foreach ($families as $files) {
       foreach ($files as $file) {
         $face = basename($file);
@@ -313,7 +319,7 @@ class PDFLib implements Canvas
    * @return void
    */
   function reopen_object($object) {
-    throw new DOMPDF_Exception("PDFLib does not support reopening objects.");
+    throw new Exception("PDFLib does not support reopening objects.");
   }
 
   /**
@@ -775,8 +781,8 @@ class PDFLib implements Canvas
     $w = (int)$w;
     $h = (int)$h;
 
-    $img_type = Image_Cache::detect_type($img_url);
-    $img_ext  = Image_Cache::type_to_ext($img_type);
+    $img_type = ImageCache::detect_type($img_url);
+    $img_ext  = ImageCache::type_to_ext($img_type);
 
     if ( !isset($this->_imgs[$img_url]) ) {
       $this->_imgs[$img_url] = $this->_pdf->load_image($img_ext, $img_url, "");
@@ -796,7 +802,7 @@ class PDFLib implements Canvas
     $this->_pdf->setfont($fh, $size);
     $this->_set_fill_color($color);
 
-    $y = $this->y($y) - Font_Metrics::get_font_height($font, $size);
+    $y = $this->y($y) - FontMetrics::get_font_height($font, $size);
 
     $word_spacing = (float)$word_spacing;
     $char_spacing = (float)$char_spacing;
@@ -980,7 +986,7 @@ class PDFLib implements Canvas
 
         case "script":
           if (!$eval) {
-            $eval = new PHP_Evaluator($this);
+            $eval = new PHPEvaluator($this);
           }
           $eval->evaluate($code, array('PAGE_NUM' => $p, 'PAGE_COUNT' => $this->_page_count));
           break;
@@ -1035,7 +1041,7 @@ class PDFLib implements Canvas
       $chunk = (1 << 21); // 2 MB
       $fh = fopen($this->_file, "rb");
       if ( !$fh )
-        throw new DOMPDF_Exception("Unable to load temporary PDF file: " . $this->_file);
+        throw new Exception("Unable to load temporary PDF file: " . $this->_file);
 
       while ( !feof($fh) )
         echo fread($fh,$chunk);
@@ -1087,4 +1093,4 @@ class PDFLib implements Canvas
 }
 
 // Workaround for idiotic limitation on statics...
-PDFLib_Adapter::$PAPER_SIZES = CPDF_Adapter::$PAPER_SIZES;
+PDFLib::$PAPER_SIZES = CPDF::$PAPER_SIZES;

@@ -2,7 +2,9 @@
 
 namespace DOMPDF\Canvas\Adapter;
 
+use DOMPDF\DOMPDF;
 use DOMPDF\Canvas\Canvas;
+use DOMPDF\Canvas\Adapter\CPDF;
 
 /**
  * @package dompdf
@@ -630,4 +632,4 @@ class TCPDF implements Canvas
   }}
     
 // Workaround for idiotic limitation on statics...
-TCPDF_Adapter::$PAPER_SIZES = CPDF_Adapter::$PAPER_SIZES;
+TCPDF::$PAPER_SIZES = CPDF::$PAPER_SIZES;

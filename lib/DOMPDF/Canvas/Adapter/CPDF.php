@@ -2,7 +2,11 @@
 
 namespace DOMPDF\Canvas\Adapter;
 
+use DOMPDF\DOMPDF;
 use DOMPDF\Canvas\Canvas;
+use DOMPDF\Image\Cache as ImageCache;
+use DOMPDF\Renderer\PHPEvaluator;
+use DOMPDF\Exception;
 
 /**
  * @package dompdf
@@ -495,11 +499,11 @@ class CPDF implements Canvas
    * @return string The url of the newly converted image
    */
   protected function _convert_gif_bmp_to_png($image_url, $type) {
-    $image_type = Image_Cache::type_to_ext($type);
+    $image_type = ImageCache::type_to_ext($type);
     $func_name = "imagecreatefrom$image_type";
     
     if ( !function_exists($func_name) ) {
-      throw new DOMPDF_Exception("Function $func_name() not found.  Cannot convert $image_type image: $image_url.  Please install the image PHP extension.");
+      throw new Exception("Function $func_name() not found.  Cannot convert $image_type image: $image_url.  Please install the image PHP extension.");
     }
 
     set_error_handler("record_warnings");
@@ -518,7 +522,7 @@ class CPDF implements Canvas
       imagedestroy($im);
     } 
     else {
-      $filename = Image_Cache::$broken_image;
+      $filename = ImageCache::$broken_image;
     }
 
     restore_error_handler();
@@ -823,7 +827,7 @@ class CPDF implements Canvas
             
           case "script":
             if ( !$eval ) {
-              $eval = new PHP_Evaluator($this);
+              $eval = new PHPEvaluator($this);
             }
             $eval->evaluate($code, array('PAGE_NUM' => $page_number, 'PAGE_COUNT' => $this->_page_count));
             break;

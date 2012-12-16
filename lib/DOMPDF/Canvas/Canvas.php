@@ -1,4 +1,9 @@
 <?php
+
+namespace DOMPDF\Canvas;
+
+use DOMPDF\DOMPDF;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -20,7 +25,8 @@
  *
  * @package dompdf
  */
-interface Canvas {
+interface Canvas
+{
   function __construct($paper = "letter", $orientation = "portrait", DOMPDF $dompdf);
 
   /**
