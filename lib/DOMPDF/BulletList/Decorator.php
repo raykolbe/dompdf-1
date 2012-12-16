@@ -2,7 +2,9 @@
 
 namespace DOMPDF\BulletList;
 
+use DOMPDF\DOMPDF;
 use DOMPDF\Frame\Decorator as FrameDecorator;
+use DOMPDF\Frame\Frame;
 
 /**
  * @package dompdf

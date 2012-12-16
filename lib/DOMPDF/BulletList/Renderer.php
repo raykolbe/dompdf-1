@@ -3,6 +3,9 @@
 namespace DOMPDF\BulletList;
 
 use DOMPDF\Renderer\AbstractRenderer;
+use DOMPDF\Image\Cache as ImageCache;
+use DOMPDF\BulletList\Decorator as BulletListDecorator;
+use DOMPDF\Font\Metrics as FontMetrics;
 
 /**
  * @package dompdf
@@ -130,7 +133,7 @@ class Renderer extends AbstractRenderer
     // Handle list-style-image
     // If list style image is requested but missing, fall back to predefined types
     if ( $style->list_style_image !== "none" &&
-         !Image_Cache::is_broken($img = $frame->get_image_url())) {
+         !ImageCache::is_broken($img = $frame->get_image_url())) {
 
       list($x,$y) = $frame->get_position();
       
@@ -164,18 +167,18 @@ class Renderer extends AbstractRenderer
 
       case "circle":
         list($x,$y) = $frame->get_position();
-        $r = ($font_size*(List_Bullet_Frame_Decorator::BULLET_SIZE /*-List_Bullet_Frame_Decorator::BULLET_THICKNESS*/ ))/2;
-        $x -= $font_size*(List_Bullet_Frame_Decorator::BULLET_SIZE/2);
-        $y += ($font_size*(1-List_Bullet_Frame_Decorator::BULLET_DESCENT))/2;
-        $o = $font_size*List_Bullet_Frame_Decorator::BULLET_THICKNESS;
+        $r = ($font_size*(BulletListDecorator::BULLET_SIZE /*-List_Bullet_Frame_Decorator::BULLET_THICKNESS*/ ))/2;
+        $x -= $font_size*(BulletListDecorator::BULLET_SIZE/2);
+        $y += ($font_size*(1-BulletListDecorator::BULLET_DESCENT))/2;
+        $o = $font_size*BulletListDecorator::BULLET_THICKNESS;
         $this->_canvas->circle($x, $y, $r, $style->color, $o, null, $fill);
         break;
 
       case "square":
         list($x, $y) = $frame->get_position();
-        $w = $font_size*List_Bullet_Frame_Decorator::BULLET_SIZE;
+        $w = $font_size*BulletListDecorator::BULLET_SIZE;
         $x -= $w;
-        $y += ($font_size*(1-List_Bullet_Frame_Decorator::BULLET_DESCENT-List_Bullet_Frame_Decorator::BULLET_SIZE))/2;
+        $y += ($font_size*(1-BulletListDecorator::BULLET_DESCENT-BulletListDecorator::BULLET_SIZE))/2;
         $this->_canvas->filled_rectangle($x, $y, $w, $w, $style->color);
         break;
     
@@ -213,7 +216,7 @@ class Renderer extends AbstractRenderer
         $line = $li->get_containing_line();
         list($x, $y) = array($frame->get_position("x"), $line->y);
 
-        $x -= Font_Metrics::get_text_width($text, $font_family, $font_size, $spacing);
+        $x -= FontMetrics::get_text_width($text, $font_family, $font_size, $spacing);
         
         // Take line-height into account
         $line_height = $style->line_height;

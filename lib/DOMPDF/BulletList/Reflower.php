@@ -3,6 +3,8 @@
 namespace DOMPDF\BulletList;
 
 use DOMPDF\Frame\Reflower as FrameReflower;
+use DOMPDF\Frame\Decorator as FrameDecorator;
+use DOMPDF\Block\Decorator as BlockDecorator;
 
 /**
  * @package dompdf
@@ -19,11 +21,11 @@ use DOMPDF\Frame\Reflower as FrameReflower;
  */
 class Reflower extends FrameReflower
 {
-  function __construct(Frame_Decorator $frame) { parent::__construct($frame); }
+  function __construct(FrameDecorator $frame) { parent::__construct($frame); }
     
   //........................................................................
 
-  function reflow(Block_Frame_Decorator $block = null) {
+  function reflow(BlockDecorator $block = null) {
     $style = $this->_frame->get_style();
 
     $style->width = $this->_frame->get_width();

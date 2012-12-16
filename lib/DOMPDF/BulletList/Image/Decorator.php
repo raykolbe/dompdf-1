@@ -2,7 +2,11 @@
 
 namespace DOMPDF\BulletList\Image;
 
+use DOMPDF\DOMPDF;
+use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Decorator as FrameDecorator;
+use DOMPDF\Image\Decorator as ImageDecorator;
+use DOMPDF\BulletList\Decorator as BulletListDecorator;
 
 /**
  * @package dompdf
@@ -51,7 +55,7 @@ class Decorator extends FrameDecorator
     $style = $frame->get_style();
     $url = $style->list_style_image;
     $frame->get_node()->setAttribute("src", $url);
-    $this->_img = new Image_Frame_Decorator($frame, $dompdf);
+    $this->_img = new ImageDecorator($frame, $dompdf);
     parent::__construct($this->_img, $dompdf);
     list($width, $height) = dompdf_getimagesize($this->_img->get_image_url());
 
@@ -85,8 +89,8 @@ class Decorator extends FrameDecorator
     //for proper alignment of bullet image and text. Allow image to not fitting on left border.
     //This controls the distance between bullet image and text 
     //return $this->_width;
-    return $this->_frame->get_style()->get_font_size()*List_Bullet_Frame_Decorator::BULLET_SIZE + 
-      2 * List_Bullet_Frame_Decorator::BULLET_PADDING;
+    return $this->_frame->get_style()->get_font_size()*BulletListDecorator::BULLET_SIZE + 
+      2 * BulletListDecorator::BULLET_PADDING;
   }
 
   /**
@@ -122,7 +126,7 @@ class Decorator extends FrameDecorator
     //Between the image and the text there is an added margin of image width.
     //Where this comes from is unknown.
     //The corresponding List_Bullet_Frame_Decorator sets a smaller margin. bullet size?
-    return $this->_width + 2 * List_Bullet_Frame_Decorator::BULLET_PADDING;
+    return $this->_width + 2 * BulletListDecorator::BULLET_PADDING;
   }
 
   /**
@@ -133,7 +137,7 @@ class Decorator extends FrameDecorator
   function get_margin_height() {
     //Hits only on "inset" lists items, to increase height of box
     //based on image height
-    return $this->_height + 2 * List_Bullet_Frame_Decorator::BULLET_PADDING;
+    return $this->_height + 2 * BulletListDecorator::BULLET_PADDING;
   }
 
   /**

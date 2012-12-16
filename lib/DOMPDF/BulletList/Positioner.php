@@ -3,6 +3,7 @@
 namespace DOMPDF\BulletList;
 
 use DOMPDF\Positioner\AbstractPositioner;
+use DOMPDF\Frame\Decorator as FrameDecorator;
 
 /**
  * @package dompdf
@@ -20,7 +21,7 @@ use DOMPDF\Positioner\AbstractPositioner;
  */
 class Positioner extends AbstractPositioner
 {
-  function __construct(Frame_Decorator $frame) { parent::__construct($frame); }
+  function __construct(FrameDecorator $frame) { parent::__construct($frame); }
   
   //........................................................................
 
