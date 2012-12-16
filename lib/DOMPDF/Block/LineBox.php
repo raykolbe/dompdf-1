@@ -2,6 +2,9 @@
 
 namespace DOMPDF\Block;
 
+use DOMPDF\Block\Decorator as BlockDecorator;
+use DOMPDF\Page\Decorator as PageDecorator;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -18,8 +21,8 @@ namespace DOMPDF\Block;
  * @access protected
  * @package dompdf
  */
-class LineBox {
-
+class LineBox
+{
   /**
    * @var Block_Frame_Decorator
    */
@@ -80,7 +83,7 @@ class LineBox {
    *
    * @param Block_Frame_Decorator $frame the Block_Frame_Decorator containing this line
    */
-  function __construct(Block_Frame_Decorator $frame, $y = 0) {
+  function __construct(BlockDecorator $frame, $y = 0) {
     $this->_block_frame = $frame;
     $this->_frames = array();
     $this->y = $y;
@@ -95,7 +98,7 @@ class LineBox {
    *
    * @return Frame[]
    */
-  function get_floats_inside(Page_Frame_Decorator $root) {
+  function get_floats_inside(PageDecorator $root) {
     $floating_frames = $root->get_floating_frames();
     
     if ( count($floating_frames) == 0 ) {

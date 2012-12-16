@@ -2,7 +2,11 @@
 
 namespace DOMPDF\Block;
 
+use DOMPDF\DOMPDF;
+use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Decorator as FrameDecorator;
+use DOMPDF\Inline\Decorator as InlineDecorator;
+use DOMPDF\Block\LineBox;
 
 /**
  * @package dompdf
@@ -36,14 +40,14 @@ class Decorator extends FrameDecorator
   function __construct(Frame $frame, DOMPDF $dompdf) {
     parent::__construct($frame, $dompdf);
     
-    $this->_line_boxes = array(new Line_Box($this));
+    $this->_line_boxes = array(new LineBox($this));
     $this->_cl = 0;
   }
 
   function reset() {
     parent::reset();
     
-    $this->_line_boxes = array(new Line_Box($this));
+    $this->_line_boxes = array(new LineBox($this));
     $this->_cl = 0;
   }
 
@@ -106,7 +110,7 @@ class Decorator extends FrameDecorator
     else*/
 
     // Handle inline frames (which are effectively wrappers)
-    if ( $frame instanceof Inline_Frame_Decorator ) {
+    if ( $frame instanceof InlineDecorator) {
 
       // Handle line breaks
       if ( $frame->get_node()->nodeName === "br" ) {

@@ -3,7 +3,7 @@
 namespace DOMPDF\Block;
 
 use DOMPDF\Positioner\AbstractPositioner;
-
+use DOMPDF\Frame\Decorator as FrameDecorator;
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -19,9 +19,7 @@ use DOMPDF\Positioner\AbstractPositioner;
  */
 class Positioner extends AbstractPositioner
 {
-
-
-  function __construct(Frame_Decorator $frame) { parent::__construct($frame); }
+  function __construct(FrameDecorator $frame) { parent::__construct($frame); }
   
   //........................................................................
 

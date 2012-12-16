@@ -3,6 +3,7 @@
 namespace DOMPDF\Block;
 
 use DOMPDF\Renderer\AbstractRenderer;
+use DOMPDF\Frame\Frame;
 
 /**
  * @package dompdf
@@ -17,8 +18,8 @@ use DOMPDF\Renderer\AbstractRenderer;
  * @access private
  * @package dompdf
  */
-class Renderer extends AbstractRenderer {
-
+class Renderer extends AbstractRenderer
+{
   //........................................................................
 
   function render(Frame $frame) {

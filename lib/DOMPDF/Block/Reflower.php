@@ -3,6 +3,10 @@
 namespace DOMPDF\Block;
 
 use DOMPDF\Frame\Reflower as FrameReflower;
+use DOMPDF\Block\Decorator as BlockDecorator;
+use DOMPDF\Font\Metrics as FontMetrics;
+use DOMPDF\Text\Decorator as TextDecorator;
+use DOMPDF\Exception;
 
 /**
  * @package dompdf
@@ -28,7 +32,7 @@ class Reflower extends FrameReflower
    */
   protected $_frame;
   
-  function __construct(Block_Frame_Decorator $frame) { parent::__construct($frame); }
+  function __construct(BlockDecorator $frame) { parent::__construct($frame); }
 
   /**
    *  Calculate the ideal used value for the width property as per:
@@ -174,7 +178,7 @@ class Reflower extends FrameReflower
     //  $cb = $frame->find_positionned_parent()->get_containing_block();
 
     if ( !isset($cb["w"]) ) {
-      throw new DOMPDF_Exception("Box property calculation requires containing block width");
+      throw new Exception("Box property calculation requires containing block width");
     }
     
     // Treat width 100% as auto
@@ -414,7 +418,7 @@ class Reflower extends FrameReflower
           }
           
           foreach($line->get_frames() as $frame) {
-            if ( $frame instanceof Block_Frame_Decorator) {
+            if ( $frame instanceof BlockDecorator) {
               continue;
             }
             $frame->set_position( $frame->get_position("x") + $line->left );
@@ -429,7 +433,7 @@ class Reflower extends FrameReflower
           
           foreach($line->get_frames() as $frame) {
             // Block frames are not aligned by text-align
-            if ($frame instanceof Block_Frame_Decorator) {
+            if ($frame instanceof BlockDecorator) {
               continue;
             }
             
@@ -451,12 +455,12 @@ class Reflower extends FrameReflower
         }
         
         // One space character's width. Will be used to get a more accurate spacing
-        $space_width = Font_Metrics::get_text_width(" ", $style->font_family, $style->font_size);
+        $space_width = FontMetrics::get_text_width(" ", $style->font_family, $style->font_size);
         
         foreach ($lines as $line) {
           if ( $line->left ) {
             foreach ( $line->get_frames() as $frame ) {
-              if ( !$frame instanceof Text_Frame_Decorator ) {
+              if ( !$frame instanceof TextDecorator ) {
                 continue;
               }
     
@@ -478,7 +482,7 @@ class Reflower extends FrameReflower
   
             $dx = 0;
             foreach($line->get_frames() as $frame) {
-              if ( !$frame instanceof Text_Frame_Decorator ) {
+              if ( !$frame instanceof TextDecorator ) {
                 continue;
               }
                 
@@ -509,7 +513,7 @@ class Reflower extends FrameReflower
           
           foreach ($line->get_frames() as $frame) {
             // Block frames are not aligned by text-align
-            if ($frame instanceof Block_Frame_Decorator) {
+            if ($frame instanceof BlockDecorator) {
               continue;
             }
             
@@ -632,7 +636,7 @@ class Reflower extends FrameReflower
       
       // Remove next frame's beginning whitespace
       $next = $child->get_next_sibling();
-      if ( $next && $next instanceof Text_Frame_Decorator) {
+      if ( $next && $next instanceof TextDecorator) {
         $next->set_text(ltrim($next->get_text()));
       }
       
