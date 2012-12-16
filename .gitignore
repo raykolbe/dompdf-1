@@ -6,3 +6,5 @@ vendor
 lib/fonts/*.afm.php
 lib/fonts/*.ufm.php
 lib/fonts/log.htm
+/DOMPDF/nbproject/private/
+/nbproject/private/
