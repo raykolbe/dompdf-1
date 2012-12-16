@@ -2,6 +2,12 @@
 
 namespace DOMPDF\Css;
 
+use DOMPDF\Css\Stylesheet;
+use DOMPDF\Css\Color;
+use DOMPDF\Exception;
+use DOMPDF\Font\Metrics as FontMetrics;
+use DOMPDF\Canvas\Adapter\CPDF;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -634,7 +640,7 @@ class Style
    * @param string $colour
    * @return array
    */
-  function munge_colour($colour) { return CSS_Color::parse($colour); }
+  function munge_colour($colour) { return Color::parse($colour); }
   
   /**
    * Alias for {@link Style::munge_colour()}
@@ -642,7 +648,7 @@ class Style
    * @param string $color
    * @return array
    */
-  function munge_color($color) { return CSS_Color::parse($color); }
+  function munge_color($color) { return Color::parse($color); }
 
   /* direct access to _important_props array from outside would work only when declared as
    * 'var $_important_props;' instead of 'protected $_important_props;'
@@ -730,7 +736,7 @@ class Style
    */
   function __get($prop) {
     if ( !isset(self::$_defaults[$prop]) ) {
-      throw new DOMPDF_Exception("'$prop' is not a valid CSS2 property.");
+      throw new Exception("'$prop' is not a valid CSS2 property.");
     }
 
     if ( isset($this->_prop_cache[$prop]) && $this->_prop_cache[$prop] != null ) {
@@ -829,7 +835,7 @@ class Style
       if ( $DEBUGCSS ) {
         print '('.$family.')';
       }
-      $font = Font_Metrics::get_font($family, $subtype);
+      $font = FontMetrics::get_font($family, $subtype);
 
       if ( $font ) {
         if ($DEBUGCSS) print '('.$font.")get_font_family]\n</pre>";
@@ -841,14 +847,14 @@ class Style
     if ( $DEBUGCSS ) {
       print '(default)';
     }
-    $font = Font_Metrics::get_font($family, $subtype);
+    $font = FontMetrics::get_font($family, $subtype);
 
     if ( $font ) {
       if ( $DEBUGCSS ) print '('.$font.")get_font_family]\n</pre>";
       return$this->_font_family = $font;
     }
     
-    throw new DOMPDF_Exception("Unable to find a suitable font replacement for: '" . $this->_props["font_family"] ."'");
+    throw new Exception("Unable to find a suitable font replacement for: '" . $this->_props["font_family"] ."'");
     
   }
 
@@ -2161,7 +2167,7 @@ class Style
       }
     }
     elseif ( isset(CPDF_Adapter::$PAPER_SIZES[$parts[0]]) ) {
-      $computed = array_slice(CPDF_Adapter::$PAPER_SIZES[$parts[0]], 2, 2);
+      $computed = array_slice(CPDF::$PAPER_SIZES[$parts[0]], 2, 2);
       
       if ( isset($parts[1]) && $parts[1] === "landscape" ) {
         $computed = array_reverse($computed);

@@ -2,6 +2,12 @@
 
 namespace DOMPDF\Css;
 
+use DOMPDF\DOMPDF;
+use DOMPDF\Exception;
+use DOMPDF\Css\AttributeTranslator;
+
+use \DOMXPath;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -226,7 +232,7 @@ class Stylesheet
    */
   function add_style($key, Style $style) {
     if ( !is_string($key) ) {
-      throw new DOMPDF_Exception("CSS rule must be keyed by a string.");
+      throw new Exception("CSS rule must be keyed by a string.");
     }
 
     if ( isset($this->_styles[$key]) ) {
@@ -651,7 +657,7 @@ class Stylesheet
           $op .= $tok[$j++];
 
           if ( $tok[$j] !== "=" ) {
-            throw new DOMPDF_Exception("Invalid CSS selector syntax: invalid attribute selector: $selector");
+            throw new Exception("Invalid CSS selector syntax: invalid attribute selector: $selector");
           }
 
           $op .= $tok[$j];
@@ -675,7 +681,7 @@ class Stylesheet
         }
 
         if ( $attr == "" ) {
-          throw new DOMPDF_Exception("Invalid CSS selector syntax: missing attribute name");
+          throw new Exception("Invalid CSS selector syntax: missing attribute name");
         }
 
         $value = trim($value, "\"'");
@@ -910,8 +916,8 @@ class Stylesheet
       $id = $frame->get_id();
 
       // Handle HTML 4.0 attributes
-      Attribute_Translator::translate_attributes($frame);
-      if ( ($str = $frame->get_node()->getAttribute(Attribute_Translator::$_style_attr)) !== "" ) {
+      AttributeTranslator::translate_attributes($frame);
+      if ( ($str = $frame->get_node()->getAttribute(AttributeTranslator::$_style_attr)) !== "" ) {
         // Lowest specificity 
         $styles[$id][1][] = $this->_parse_properties($str);
       }
@@ -1030,7 +1036,7 @@ class Stylesheet
 
     if ( preg_match_all($re, $css, $matches, PREG_SET_ORDER) === false ) {
       // An error occured
-      throw new DOMPDF_Exception("Error parsing css file: preg_match_all() failed.");
+      throw new Exception("Error parsing css file: preg_match_all() failed.");
     }
 
     // After matching, the array indicies are set as follows:
@@ -1272,7 +1278,7 @@ class Stylesheet
       "style"  => $descriptors->font_style,
     );
     
-    Font_Metrics::register_font($style, $valid_sources[0]["path"]);
+    FontMetrics::register_font($style, $valid_sources[0]["path"]);
   }
 
   /**

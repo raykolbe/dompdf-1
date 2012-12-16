@@ -2,6 +2,10 @@
 
 namespace DOMPDF\Css;
 
+use \DOMElement;
+use \DOMNode;
+use \DOMXpath;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
