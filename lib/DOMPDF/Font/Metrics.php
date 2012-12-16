@@ -2,6 +2,11 @@
 
 namespace DOMPDF\Font;
 
+use DOMPDF\Canvas\Canvas;
+use DOMPDF\Canvas\Factory as CanvasFactory;
+use DOMPDF\DOMPDF;
+use DOMPDF\Font\Metrics as FontMetrics;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -74,7 +79,7 @@ class Metrics
   static function init(Canvas $canvas = null) {
     if (!self::$_pdf) {
       if (!$canvas) {
-        $canvas = Canvas_Factory::get_instance(new DOMPDF());
+        $canvas = CanvasFactory::get_instance(new DOMPDF());
       }
       
       self::$_pdf = $canvas;
@@ -311,7 +316,7 @@ class Metrics
   
   static function register_font($style, $remote_file) {
     $fontname = mb_strtolower($style["family"]);
-    $families = Font_Metrics::get_font_families();
+    $families = FontMetrics::get_font_families();
     
     $entry = array();
     if ( isset($families[$fontname]) ) {
@@ -322,12 +327,12 @@ class Metrics
     $cache_entry = $local_file;
     $local_file .= ".ttf";
     
-    $style_string = Font_Metrics::get_type("{$style['weight']} {$style['style']}");
+    $style_string = FontMetrics::get_type("{$style['weight']} {$style['style']}");
     
     if ( !isset($entry[$style_string]) ) {
       $entry[$style_string] = $cache_entry;
       
-      Font_Metrics::set_font_family($fontname, $entry);
+      FontMetrics::set_font_family($fontname, $entry);
       
       // Download the remote file
       if ( !is_file($local_file) ) {
@@ -344,11 +349,11 @@ class Metrics
       $font->saveAdobeFontMetrics("$cache_entry.ufm");
       
       // Save the changes
-      Font_Metrics::save_font_families();
+      FontMetrics::save_font_families();
     }
     
     return true;
   }
 }
 
-Font_Metrics::load_font_families();
+FontMetrics::load_font_families();
