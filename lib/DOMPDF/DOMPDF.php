@@ -2,6 +2,21 @@
 
 namespace DOMPDF;
 
+use DOMPDF\Frame\Factory as FrameFactory;
+use DOMPDF\Frame\Tree as FrameTree;
+use DOMPDF\Canvas\Factory as CanvasFactory;
+use DOMPDF\Font\Metrics as FontMetrics;
+use DOMPDF\Canvas\Adapter\CPDF as CPDFAdapter;
+use DOMPDF\BulletList\Renderer as BulletListRenderer;
+use DOMPDF\Image\Cache as ImageCache;
+use DOMPDF\Exception;
+
+use \HTML5_Tokenizer as Html5Tokenizer;
+use \HTML5_TreeBuilder as Html5TreeBuilder;
+
+use \DOMDocument;
+use \DOMXPath;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -57,8 +72,8 @@ namespace DOMPDF;
  *
  * @package dompdf
  */
-class DOMPDF {
-
+class DOMPDF
+{
   /**
    * DomDocument representing the HTML document
    *
@@ -293,7 +308,7 @@ class DOMPDF {
    */
   function set_option($key, $value) {
     if ( !array_key_exists($key, $this->_options) ) {
-      throw new DOMPDF_Exception("Option '$key' doesn't exist");
+      throw new Exception("Option '$key' doesn't exist");
     }
 
     $this->_options[$key] = $value;
@@ -477,24 +492,24 @@ class DOMPDF {
     }
 
     if ( !$this->get_option("enable_remote") && ($this->_protocol != "" && $this->_protocol !== "file://" ) ) {
-      throw new DOMPDF_Exception("Remote file requested, but DOMPDF_ENABLE_REMOTE is false.");
+      throw new Exception("Remote file requested, but DOMPDF_ENABLE_REMOTE is false.");
     }
 
     if ($this->_protocol == "" || $this->_protocol === "file://") {
 
       $realfile = realpath($file);
       if ( !$file ) {
-        throw new DOMPDF_Exception("File '$file' not found.");
+        throw new Exception("File '$file' not found.");
       }
 
       $chroot = $this->get_option("chroot");
       if ( strpos($realfile, $chroot) !== 0 ) {
-        throw new DOMPDF_Exception("Permission denied on $file. The file could not be found under the directory specified by DOMPDF_CHROOT.");
+        throw new Exception("Permission denied on $file. The file could not be found under the directory specified by DOMPDF_CHROOT.");
       }
 
       // Exclude dot files (e.g. .htaccess)
       if ( substr(basename($realfile), 0, 1) === "." ) {
-        throw new DOMPDF_Exception("Permission denied on $file.");
+        throw new Exception("Permission denied on $file.");
       }
 
       $file = $realfile;
@@ -605,7 +620,7 @@ class DOMPDF {
     $quirksmode = false;
 
     if ( $this->get_option("enable_html5_parser") ) {
-      $tokenizer = new HTML5_Tokenizer($str);
+      $tokenizer = new Html5Tokenizer($str);
       $tokenizer->parse();
       $doc = $tokenizer->save();
 
@@ -619,7 +634,7 @@ class DOMPDF {
         }
       }
 
-      $quirksmode = ($tokenizer->getTree()->getQuirksMode() > HTML5_TreeBuilder::NO_QUIRKS);
+      $quirksmode = ($tokenizer->getTree()->getQuirksMode() > Html5TreeBuilder::NO_QUIRKS);
     }
     else {
       $doc = new DOMDocument();
@@ -650,7 +665,7 @@ class DOMPDF {
     $this->_xml = $doc;
     $this->_quirksmode = $quirksmode;
 
-    $this->_tree = new Frame_Tree($this->_xml);
+    $this->_tree = new FrameTree($this->_xml);
 
     restore_error_handler();
 
@@ -868,10 +883,10 @@ class DOMPDF {
       $this->set_paper(array(0, 0, $base_page_style->size[0], $base_page_style->size[1]));
     }
 
-    $this->_pdf = Canvas_Factory::get_instance($this, $this->_paper_size, $this->_paper_orientation);
-    Font_Metrics::init($this->_pdf);
+    $this->_pdf = CanvasFactory::get_instance($this, $this->_paper_size, $this->_paper_orientation);
+    FontMetrics::init($this->_pdf);
 
-    if ( $this->get_option("enable_font_subsetting") && $this->_pdf instanceof CPDF_Adapter ) {
+    if ( $this->get_option("enable_font_subsetting") && $this->_pdf instanceof CPDFAdapter ) {
       foreach ($this->_tree->get_frames() as $frame) {
         $style = $frame->get_style();
         $node  = $frame->get_node();
@@ -884,7 +899,7 @@ class DOMPDF {
 
         // Handle generated content (list items)
         if ( $style->display === "list-item" ) {
-          $chars = List_Bullet_Renderer::get_counter_chars($style->list_style_type);
+          $chars = BulletListRenderer::get_counter_chars($style->list_style_type);
           $this->_pdf->register_string_subset($style->font_family, $chars);
           continue;
         }
@@ -898,12 +913,12 @@ class DOMPDF {
     foreach ($this->_tree->get_frames() as $frame) {
       // Set up the root frame
       if ( is_null($root) ) {
-        $root = Frame_Factory::decorate_root( $this->_tree->get_root(), $this );
+        $root = FrameFactory::decorate_root( $this->_tree->get_root(), $this );
         continue;
       }
 
       // Create the appropriate decorators, reflowers & positioners.
-      Frame_Factory::decorate_frame($frame, $this, $root);
+      FrameFactory::decorate_frame($frame, $this, $root);
     }
 
     // Add meta information
@@ -939,7 +954,7 @@ class DOMPDF {
     $root->reflow();
 
     // Clean up cached images
-    Image_Cache::clear();
+    ImageCache::clear();
 
     global $_dompdf_warnings, $_dompdf_show_warnings;
     if ( $_dompdf_show_warnings ) {
