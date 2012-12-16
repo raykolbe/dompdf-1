@@ -2,6 +2,14 @@
 
 namespace DOMPDF\Frame;
 
+use DOMPDF\Frame\Frame;
+use DOMPDF\Frame\FrameList;
+use DOMPDF\Frame\Decorator as FrameDecorator;
+use DOMPDF\Block\Decorator as BlockDecorator;
+use DOMPDF\Exception;
+
+use \DOMNode;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -596,7 +604,7 @@ class Frame
     $this->_style = $style;
   }
 
-  function set_decorator(Frame_Decorator $decorator) {
+  function set_decorator(FrameDecorator $decorator) {
     $this->_decorator = $decorator;
   }
 
@@ -805,7 +813,7 @@ class Frame
     }
 
     if ( $ref->_parent !== $this ) {
-      throw new DOMPDF_Exception("Reference child is not a child of this node.");
+      throw new Exception("Reference child is not a child of this node.");
     }
 
     // Update the node
@@ -850,7 +858,7 @@ class Frame
     }
 
     if ( $ref->_parent !== $this ) {
-      throw new DOMPDF_Exception("Reference child is not a child of this node.");
+      throw new Exception("Reference child is not a child of this node.");
     }
 
     // Update the node
@@ -892,7 +900,7 @@ class Frame
    */
   function remove_child(Frame $child, $update_node = true) {
     if ( $child->_parent !== $this ) {
-      throw new DOMPDF_Exception("Child not found in this frame");
+      throw new Exception("Child not found in this frame");
     }
 
     if ( $update_node ) {
@@ -976,7 +984,7 @@ class Frame
 
     $str .= "\nStyle: <pre>". $this->_style->__toString() . "</pre>";
 
-    if ( $this->_decorator instanceof Block_Frame_Decorator ) {
+    if ( $this->_decorator instanceof BlockDecorator ) {
       $str .= "Lines:<pre>";
       foreach ($this->_decorator->get_line_boxes() as $line) {
         foreach ($line->get_frames() as $frame) {
@@ -1007,182 +1015,5 @@ class Frame
     }
 
     return $str;
-  }
-}
-
-//------------------------------------------------------------------------
-
-/**
- * Linked-list IteratorAggregate
- *
- * @access private
- * @package dompdf
- */
-class FrameList implements IteratorAggregate {
-  protected $_frame;
-
-  function __construct($frame) { $this->_frame = $frame; }
-  function getIterator() { return new FrameListIterator($this->_frame); }
-}
-
-/**
- * Linked-list Iterator
- *
- * Returns children in order and allows for list to change during iteration,
- * provided the changes occur to or after the current element
- *
- * @access private
- * @package dompdf
- */
-class FrameListIterator implements Iterator {
-
-  /**
-   * @var Frame
-   */
-  protected $_parent;
-
-  /**
-   * @var Frame
-   */
-  protected $_cur;
-
-  /**
-   * @var int
-   */
-  protected $_num;
-
-  function __construct(Frame $frame) {
-    $this->_parent = $frame;
-    $this->_cur = $frame->get_first_child();
-    $this->_num = 0;
-  }
-
-  function rewind() {
-    $this->_cur = $this->_parent->get_first_child();
-    $this->_num = 0;
-  }
-
-  /**
-   * @return bool
-   */
-  function valid() {
-    return isset($this->_cur);// && ($this->_cur->get_prev_sibling() === $this->_prev);
-  }
-
-  function key() { return $this->_num; }
-
-  /**
-   * @return Frame
-   */
-  function current() { return $this->_cur; }
-
-  /**
-   * @return Frame
-   */
-  function next() {
-
-    $ret = $this->_cur;
-    if ( !$ret ) {
-      return null;
-    }
-
-    $this->_cur = $this->_cur->get_next_sibling();
-    $this->_num++;
-    return $ret;
-  }
-}
-
-//------------------------------------------------------------------------
-
-/**
- * Pre-order IteratorAggregate
- *
- * @access private
- * @package dompdf
- */
-class FrameTreeList implements IteratorAggregate {
-  /**
-   * @var Frame
-   */
-  protected $_root;
-
-  function __construct(Frame $root) { $this->_root = $root; }
-
-  /**
-   * @return FrameTreeIterator
-   */
-  function getIterator() { return new FrameTreeIterator($this->_root); }
-}
-
-/**
- * Pre-order Iterator
- *
- * Returns frames in preorder traversal order (parent then children)
- *
- * @access private
- * @package dompdf
- */
-class FrameTreeIterator implements Iterator {
-  /**
-   * @var Frame
-   */
-  protected $_root;
-  protected $_stack = array();
-
-  /**
-   * @var int
-   */
-  protected $_num;
-
-  function __construct(Frame $root) {
-    $this->_stack[] = $this->_root = $root;
-    $this->_num = 0;
-  }
-
-  function rewind() {
-    $this->_stack = array($this->_root);
-    $this->_num = 0;
-  }
-
-  /**
-   * @return bool
-   */
-  function valid() {
-    return count($this->_stack) > 0;
-  }
-
-  /**
-   * @return int
-   */
-  function key() {
-    return $this->_num;
-  }
-
-  /**
-   * @return Frame
-   */
-  function current() {
-    return end($this->_stack);
-  }
-
-  /**
-   * @return Frame
-   */
-  function next() {
-    $b = end($this->_stack);
-
-    // Pop last element
-    unset($this->_stack[ key($this->_stack) ]);
-    $this->_num++;
-
-    // Push all children onto the stack in reverse order
-    if ( $c = $b->get_last_child() ) {
-      $this->_stack[] = $c;
-      while ( $c = $c->get_prev_sibling() ) {
-        $this->_stack[] = $c;
-      }
-    }
-
-    return $b;
   }
 }

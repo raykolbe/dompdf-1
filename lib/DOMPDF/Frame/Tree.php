@@ -2,6 +2,13 @@
 
 namespace DOMPDF\Frame;
 
+use DOMPDF\Frame\FrameTreeList;
+use DOMPDF\Exception;
+
+use \DomDocument;
+use \DOMXPath;
+use \DOMNode;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -22,7 +29,6 @@ namespace DOMPDF\Frame;
  */
 class Tree
 {
-    
   /**
    * Tags to ignore while parsing the tree
    *
@@ -123,7 +129,7 @@ class Tree
     }
 
     if ( is_null($html) ) {
-      throw new DOMPDF_Exception("Requested HTML document contains no data.");
+      throw new Exception("Requested HTML document contains no data.");
     }
 
     $this->fix_tables();

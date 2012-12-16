@@ -2,6 +2,14 @@
 
 namespace DOMPDF\Frame;
 
+use DOMPDF\DOMPDF;
+use DOMPDF\Frame\Frame;
+use DOMPDF\Frame\Factory as FrameFactory;
+use DOMPDF\Page\Decorator as PageDecorator;
+use DOMPDF\Page\Reflower as PageReflower;
+
+use \DOMXPath;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -31,8 +39,8 @@ class Factory
    * @return Page_Frame_Decorator
    */
   static function decorate_root(Frame $root, DOMPDF $dompdf) {
-    $frame = new Page_Frame_Decorator($root, $dompdf);
-    $frame->set_reflower( new Page_Frame_Reflower($frame) );
+    $frame = new PageDecorator($root, $dompdf);
+    $frame->set_reflower( new PageReflower($frame) );
     $root->set_decorator($frame);
     return $frame;
   }
@@ -242,7 +250,7 @@ class Factory
       $new_style->inherit($style);
       $b_f->set_style($new_style);
       
-      $deco->prepend_child( Frame_Factory::decorate_frame($b_f, $dompdf, $root) );
+      $deco->prepend_child( FrameFactory::decorate_frame($b_f, $dompdf, $root) );
     }
     
     return $deco;

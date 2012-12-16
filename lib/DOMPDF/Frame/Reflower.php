@@ -2,6 +2,10 @@
 
 namespace DOMPDF\Frame;
 
+use DOMPDF\Frame\Frame;
+use DOMPDF\Frame\Factory as FrameFactory;
+use DOMPDF\Block\Decorator as BlockDecorator;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -20,7 +24,6 @@ namespace DOMPDF\Frame;
  */
 abstract class Reflower
 {
-
   /**
    * Frame for this reflower
    *
@@ -126,7 +129,7 @@ abstract class Reflower
 
   //........................................................................
 
-  abstract function reflow(Block_Frame_Decorator $block = null);
+  abstract function reflow(BlockDecorator $block = null);
 
   //........................................................................
 
@@ -446,7 +449,7 @@ abstract class Reflower
       $new_frame = new Frame($node);
       $new_frame->set_style($new_style);
       
-      Frame_Factory::decorate_frame($new_frame, $frame->get_dompdf(), $frame->get_root());
+      FrameFactory::decorate_frame($new_frame, $frame->get_dompdf(), $frame->get_root());
       $frame->append_child($new_frame);
     }
   }
