@@ -2,6 +2,10 @@
 
 namespace DOMPDF\Image;
 
+use DOMPDF\DOMPDF;
+use DOMPDF\ImageException;
+use DOMPDF\Image\Cache as ImageCache;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -61,7 +65,7 @@ class Cache
       
       // Remote not allowed and is not DataURI
       if ( !$enable_remote && $remote && !$data_uri ) {
-        throw new DOMPDF_Image_Exception("DOMPDF_ENABLE_REMOTE is set to FALSE");
+        throw new ImageException("DOMPDF_ENABLE_REMOTE is set to FALSE");
       } 
       
       // Remote allowed or DataURI
@@ -94,7 +98,7 @@ class Cache
           // Image not found or invalid
           if ( strlen($image) == 0 ) {
             $msg = ($data_uri ? "Data-URI could not be parsed" : "Image not found");
-            throw new DOMPDF_Image_Exception($msg);
+            throw new ImageException($msg);
           }
           
           // Image found, put in cache and process
@@ -116,7 +120,7 @@ class Cache
   
       // Check if the local file is readable
       if ( !is_readable($resolved_url) || !filesize($resolved_url) ) {
-        throw new DOMPDF_Image_Exception("Image not readable or empty");
+        throw new ImageException("Image not readable or empty");
       }
       
       // Check is the file is an image
@@ -134,11 +138,11 @@ class Cache
         
         // Unknown image type
         else {
-          throw new DOMPDF_Image_Exception("Image type unknown");
+          throw new ImageException("Image type unknown");
         }
       }
     }
-    catch(DOMPDF_Image_Exception $e) {
+    catch(ImageException $e) {
       $resolved_url = self::$broken_image;
       $type = IMAGETYPE_PNG;
       $message = $e->getMessage()." \n $url";
@@ -183,4 +187,4 @@ class Cache
   }
 }
 
-Image_Cache::$broken_image = DOMPDF_LIB_DIR . "/res/broken_image.png";
+ImageCache::$broken_image = DOMPDF_LIB_DIR . "/res/broken_image.png";

@@ -3,6 +3,8 @@
 namespace DOMPDF\Image;
 
 use DOMPDF\Block\Renderer as BlockRenderer;
+use DOMPDF\Frame\Frame;
+use DOMPDF\Image\Cache as ImageCache;
 
 /**
  * @package dompdf
@@ -87,7 +89,7 @@ class Renderer extends BlockRenderer
     $src = $frame->get_image_url();
     $alt = null;
 
-    if ( Image_Cache::is_broken($src) &&
+    if ( ImageCache::is_broken($src) &&
       $alt = $frame->get_node()->getAttribute("alt") ) {
       $font = $style->font_family;
       $size = $style->font_size;

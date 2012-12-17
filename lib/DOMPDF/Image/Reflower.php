@@ -3,6 +3,8 @@
 namespace DOMPDF\Image;
 
 use DOMPDF\Frame\Reflower as FrameReflower;
+use DOMPDF\Image\Decorator as ImageDecorator;
+use DOMPDF\Block\Decorator as BlockDecorator;
 
 /**
  * @package dompdf
@@ -20,11 +22,11 @@ use DOMPDF\Frame\Reflower as FrameReflower;
  */
 class Reflower extends FrameReflower
 {
-  function __construct(Image_Frame_Decorator $frame) {
+  function __construct(ImageDecorator $frame) {
     parent::__construct($frame);
   }
 
-  function reflow(Block_Frame_Decorator $block = null) {
+  function reflow(BlockDecorator $block = null) {
     $this->_frame->position();
     
     //FLOAT

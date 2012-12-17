@@ -2,7 +2,11 @@
 
 namespace DOMPDF\Image;
 
+use DOMPDF\DOMPDF;
+use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Decorator as FrameDecorator;
+use DOMPDF\Image\Cache as ImageCache;
+use DOMPDF\Font\Metrics as FontMetrics;
 
 /**
  * @package dompdf
@@ -48,7 +52,7 @@ class Decorator extends FrameDecorator
     $debug_png = $dompdf->get_option("debug_png");
     if ($debug_png) print '[__construct '.$url.']';
 
-    list($this->_image_url, /*$type*/, $this->_image_msg) = Image_Cache::resolve_url(
+    list($this->_image_url, /*$type*/, $this->_image_msg) = ImageCache::resolve_url(
       $url,
       $dompdf->get_protocol(),
       $dompdf->get_host(),
@@ -56,11 +60,11 @@ class Decorator extends FrameDecorator
       $dompdf
     );
 
-    if ( Image_Cache::is_broken($this->_image_url) &&
+    if ( ImageCache::is_broken($this->_image_url) &&
          $alt = $frame->get_node()->getAttribute("alt") ) {
       $style = $frame->get_style();
-      $style->width  = (4/3)*Font_Metrics::get_text_width($alt, $style->font_family, $style->font_size, $style->word_spacing);
-      $style->height = Font_Metrics::get_font_height($style->font_family, $style->font_size);
+      $style->width  = (4/3)*FontMetrics::get_text_width($alt, $style->font_family, $style->font_size, $style->word_spacing);
+      $style->height = FontMetrics::get_font_height($style->font_family, $style->font_size);
     }
   }
 
