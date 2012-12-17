@@ -2,6 +2,9 @@
 
 namespace DOMPDF\Renderer;
 
+use DOMPDF\Canvas\Canvas;
+use DOMPDF\Frame\Frame;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/

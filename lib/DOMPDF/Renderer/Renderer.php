@@ -2,6 +2,8 @@
 
 namespace DOMPDF\Renderer;
 
+use DOMPDF\Frame\Frame;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/

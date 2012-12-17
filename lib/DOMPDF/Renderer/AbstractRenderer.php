@@ -2,6 +2,12 @@
 
 namespace DOMPDF\Renderer;
 
+use DOMPDF\DOMPDF;
+use DOMPDF\Frame\Frame;
+use DOMPDF\Image\Cache as ImageCache;
+use DOMPDF\Canvas\Adapter\CPDF;
+use DOMPDF\Css\Color;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -87,7 +93,7 @@ abstract class Renderer
     );
 
     // Bail if the image is no good
-    if ( Image_Cache::is_broken($img) ) {
+    if ( ImageCache::is_broken($img) ) {
       return;
     }
 
@@ -411,7 +417,7 @@ abstract class Renderer
     //$src: GD object of original image
     //When using cpdf and optimization to direct png creation from gd object is available,
     //don't create temp file, but place gd object directly into the pdf
-    if ( !$is_png && $this->_canvas instanceof CPDF_Adapter ) {
+    if ( !$is_png && $this->_canvas instanceof CPDF ) {
       // Note: CPDF_Adapter image converts y position
       $this->_canvas->get_cpdf()->addImagePng($filedummy, $x, $this->_canvas->get_height() - $y - $height, $width, $height, $bg);
     } 
@@ -751,6 +757,6 @@ abstract class Renderer
   }
 
   protected function _debug_layout($box, $color = "red", $style = array()) {
-    $this->_canvas->rectangle($box[0], $box[1], $box[2], $box[3], CSS_Color::parse($color), 0.1, $style);
+    $this->_canvas->rectangle($box[0], $box[1], $box[2], $box[3], Color::parse($color), 0.1, $style);
   }
 }
