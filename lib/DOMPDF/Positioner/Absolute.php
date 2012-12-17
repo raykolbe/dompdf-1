@@ -2,6 +2,8 @@
 
 namespace DOMPDF\Positioner;
 
+use DOMPDF\Frame\Decorator as FrameDecorator;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -14,7 +16,7 @@ namespace DOMPDF\Positioner;
  */
 class Absolute extends AbstractPositioner
 {
-  function __construct(Frame_Decorator $frame) { parent::__construct($frame); }
+  function __construct(FrameDecorator $frame) { parent::__construct($frame); }
 
   function position() {
 
