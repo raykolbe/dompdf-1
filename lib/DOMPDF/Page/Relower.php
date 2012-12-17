@@ -2,7 +2,10 @@
 
 namespace DOMPDF\Page;
 
+use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Reflower as FrameReflower;
+use DOMPDF\Page\Decorator as PageDecorator;
+use DOMPDF\Block\Decorator as BlockDecorator;
 
 /**
  * @package dompdf
@@ -34,7 +37,7 @@ class Reflower extends FrameReflower
    */
   private $_canvas;
 
-  function __construct(Page_Frame_Decorator $frame) { parent::__construct($frame); }
+  function __construct(PageDecorator $frame) { parent::__construct($frame); }
   
   function apply_page_style(Frame $frame, $page_number){
     $style = $frame->get_style();
@@ -79,7 +82,7 @@ class Reflower extends FrameReflower
    * Paged layout:
    * http://www.w3.org/TR/CSS21/page.html
    */
-  function reflow(Block_Frame_Decorator $block = null) {
+  function reflow(BlockDecorator $block = null) {
     $fixed_children = array();
     $prev_child = null;
     $child = $this->_frame->get_first_child();

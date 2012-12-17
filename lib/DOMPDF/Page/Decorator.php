@@ -2,7 +2,11 @@
 
 namespace DOMPDF\Page;
 
+use DOMPDF\DOMPDF;
+use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Decorator as FrameDecorator;
+use DOMPDF\Table\Decorator as TableDecorator;
+use DOMPDF\Css\Style;
 
 /**
  * @package dompdf
@@ -371,7 +375,7 @@ class Decorator extends FrameDecorator
 
       // Simply check if the parent table's page_break_inside property is
       // not 'avoid'
-      $p = Table_Frame_Decorator::find_parent_table($frame);
+      $p = TableDecorator::find_parent_table($frame);
 
       while ($p) {
         if ( $p->get_style()->page_break_inside === "avoid" ) {
@@ -396,7 +400,7 @@ class Decorator extends FrameDecorator
       dompdf_debug("page-break","table-row/row-groups: break allowed");
       return true;
 
-    } else if ( in_array($display, Table_Frame_Decorator::$ROW_GROUPS) ) {
+    } else if ( in_array($display, TableDecorator::$ROW_GROUPS) ) {
 
       // Disallow breaks at row-groups: only split at row boundaries
       return false;
