@@ -2,6 +2,9 @@
 
 namespace DOMPDF\Javascript;
 
+use DOMPDF\DOMPDF;
+use DOMPDF\Frame\Frame;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
