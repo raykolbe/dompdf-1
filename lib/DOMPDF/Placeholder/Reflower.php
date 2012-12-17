@@ -2,7 +2,9 @@
 
 namespace DOMPDF\Placeholder;
 
+use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Reflower as FrameReflower;
+use DOMPDF\Block\Decorator as BlockDecorator;
 
 /**
  * @package dompdf
@@ -21,6 +23,6 @@ class Reflower extends FrameReflower
 {
   function __construct(Frame $frame) { parent::__construct($frame); }
 
-  function reflow(Block_Frame_Decorator $block = null) { return; }
+  function reflow(BlockDecorator $block = null) { return; }
   
 }

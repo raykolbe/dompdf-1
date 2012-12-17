@@ -2,6 +2,8 @@
 
 namespace DOMPDF\Placeholder;
 
+use DOMPDF\DOMPDF;
+use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Decorator as FrameDecorator;
 
 /**

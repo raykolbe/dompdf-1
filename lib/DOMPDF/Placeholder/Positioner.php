@@ -2,6 +2,7 @@
 
 namespace DOMPDF\Placeholder;
 
+use DOMPDF\Frame\Decorator as FrameDecorator;
 use DOMPDF\Positioner\AbstractPositioner;
 
 /**
@@ -19,7 +20,7 @@ use DOMPDF\Positioner\AbstractPositioner;
  */
 class Positioner extends AbstractPositioner
 {
-  function __construct(Frame_Decorator $frame) {
+  function __construct(FrameDecorator $frame) {
     parent::__construct($frame);
   }
 
