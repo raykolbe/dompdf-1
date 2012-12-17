@@ -3,6 +3,9 @@
 namespace DOMPDF\Inline;
 
 use DOMPDF\Positioner\AbstractPositioner;
+use DOMPDF\Frame\Decorator as FrameDecorator;
+use DOMPDF\Inline\Decorator as InlineDecorator;
+use DOMPDF\Exception;
 
 /**
  * @package dompdf
@@ -19,7 +22,7 @@ use DOMPDF\Positioner\AbstractPositioner;
  */
 class Positioner extends AbstractPositioner
 {
-  function __construct(Frame_Decorator $frame) { parent::__construct($frame); }
+  function __construct(FrameDecorator $frame) { parent::__construct($frame); }
 
   //........................................................................
 
@@ -39,7 +42,7 @@ class Positioner extends AbstractPositioner
     // End debugging
 
     if ( !$p )
-      throw new DOMPDF_Exception("No block-level parent found.  Not good.");
+      throw new Exception("No block-level parent found.  Not good.");
 
     $f = $this->_frame;
     
@@ -58,7 +61,7 @@ class Positioner extends AbstractPositioner
     $f = $this->_frame;
 
     if ( !$is_fixed && $f->get_parent() &&
-         $f->get_parent() instanceof Inline_Frame_Decorator &&
+         $f->get_parent() instanceof InlineDecorator &&
          $f->is_text_node() ) {
       
       $min_max = $f->get_reflower()->get_min_max_width();

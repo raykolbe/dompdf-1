@@ -2,7 +2,10 @@
 
 namespace DOMPDF\Inline;
 
+use DOMPDF\DOMPDF;
+use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Decorator as FrameDecorator;
+use DOMPDF\Exception;
 
 /**
  * @package dompdf
@@ -30,7 +33,7 @@ class Decorator extends FrameDecorator
     }
 
     if ( $frame->get_parent() !== $this )
-      throw new DOMPDF_Exception("Unable to split: frame is not a child of this one.");
+      throw new Exception("Unable to split: frame is not a child of this one.");
         
     $split = $this->copy( $this->_frame->get_node()->cloneNode() ); 
     $this->get_parent()->insert_child_after($split, $this);

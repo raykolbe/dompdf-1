@@ -3,6 +3,7 @@
 namespace DOMPDF\Inline;
 
 use DOMPDF\Renderer\AbstractRenderer;
+use DOMPDF\Frame\Frame;
 
 /**
  * @package dompdf

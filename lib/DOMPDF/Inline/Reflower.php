@@ -3,6 +3,8 @@
 namespace DOMPDF\Inline;
 
 use DOMPDF\Frame\Reflower as FrameReflower;
+use DOMPDF\Frame\Frame;
+use DOMPDF\Block\Decorator as BlockDecorator;
 
 /**
  * @package dompdf
@@ -23,7 +25,7 @@ class Reflower extends FrameReflower
   
   //........................................................................
 
-  function reflow(Block_Frame_Decorator $block = null) {
+  function reflow(BlockDecorator $block = null) {
     $frame = $this->_frame;
     
     // Check if a page break is forced
