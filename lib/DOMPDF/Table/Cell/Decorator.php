@@ -2,7 +2,9 @@
 
 namespace DOMPDF\Table\Cell;
 
+use DOMPDF\DOMPDF;
 use DOMPDF\Block\Decorator as BlockDecorator;
+use DOMPDF\Frame\Frame;
 
 /**
  * @package dompdf

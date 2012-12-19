@@ -3,6 +3,8 @@
 namespace DOMPDF\Table;
 
 use DOMPDF\Frame\Reflower as FrameReflower;
+use DOMPDF\Table\Decorator as TableDecorator;
+use DOMPDF\Block\Decorator as BlockDecorator;
 
 /**
  * @package dompdf
@@ -33,7 +35,7 @@ class Reflower extends FrameReflower
    */
   protected $_state;
 
-  function __construct(Table_Frame_Decorator $frame) {
+  function __construct(TableDecorator $frame) {
     $this->_state = null;
     parent::__construct($frame);
   }
@@ -372,7 +374,7 @@ class Reflower extends FrameReflower
   /**
    * @param Block_Frame_Decorator $block
    */
-  function reflow(Block_Frame_Decorator $block = null) {
+  function reflow(BlockDecorator $block = null) {
     /**
      * @var Table_Frame_Decorator
      */

@@ -3,6 +3,8 @@
 namespace DOMPDF\Table\Cell;
 
 use DOMPDF\Block\Renderer as BlockRenderer;
+use DOMPDF\Frame\Frame;
+use DOMPDF\Table\Decorator as TableDecorator;
 
 /**
  * @package dompdf
@@ -40,7 +42,7 @@ class Renderer extends BlockRenderer
       $this->_background_image($url, $x, $y, $w, $h, $style);
     }
     
-    $table = Table_Frame_Decorator::find_parent_table($frame);
+    $table = TableDecorator::find_parent_table($frame);
 
     if ( $table->get_style()->border_collapse !== "collapse" ) {
       $this->_render_border($frame);

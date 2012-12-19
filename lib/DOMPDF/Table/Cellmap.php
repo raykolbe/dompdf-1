@@ -2,6 +2,11 @@
 
 namespace DOMPDF\Table;
 
+use DOMPDF\Frame\Frame;
+use DOMPDF\Table\Decorator as TableDecorator;
+use DOMPDF\Table\Cell\Decorator as CellDecorator;
+use DOMPDF\Exception;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -124,7 +129,7 @@ class Cellmap
 
   //........................................................................
 
-  function __construct(Table_Frame_Decorator $table) {
+  function __construct(TableDecorator $table) {
     $this->_table = $table;
     $this->reset();
   }
@@ -244,7 +249,7 @@ class Cellmap
     $key = $frame->get_id();
 
     if ( !isset($this->_frames[$key]) ) {
-      throw new DOMPDF_Exception("Frame not found in cellmap");
+      throw new Exception("Frame not found in cellmap");
     }
 
     return $this->_frames[$key];
@@ -262,7 +267,7 @@ class Cellmap
     $key = $frame->get_id();
 
     if ( !isset($this->_frames[$key]) ) {
-      throw new DOMPDF_Exception("Frame not found in cellmap");
+      throw new Exception("Frame not found in cellmap");
     }
 
     $col = $this->_frames[$key]["columns"][0];
@@ -291,7 +296,7 @@ class Cellmap
     $key = $frame->get_id();
 
     if ( !isset($this->_frames[$key]) ) {
-      throw new DOMPDF_Exception("Frame not found in cellmap");
+      throw new Exception("Frame not found in cellmap");
     }
 
     $cols = $this->_frames[$key]["columns"];
@@ -307,7 +312,7 @@ class Cellmap
     $key = $frame->get_id();
 
     if ( !isset($this->_frames[$key]) ) {
-      throw new DOMPDF_Exception("Frame not found in cellmap");
+      throw new Exception("Frame not found in cellmap");
     }
 
     $rows = $this->_frames[$key]["rows"];
@@ -395,7 +400,7 @@ class Cellmap
     if ( $display === "table-row" ||
          $display === "table" ||
          $display === "inline-table" ||
-         in_array($display, Table_Frame_Decorator::$ROW_GROUPS) ) {
+         in_array($display, TableDecorator::$ROW_GROUPS) ) {
 
       $start_row = $this->__row;
       foreach ( $frame->get_children() as $child ) {
@@ -716,7 +721,7 @@ class Cellmap
         $h += $this->_rows[$row]["height"];
       }
 
-      if ( $frame instanceof Table_Cell_Frame_Decorator ) {
+      if ( $frame instanceof CellDecorator ) {
         $frame->set_cell_height($h);
       }
       else {
@@ -754,7 +759,7 @@ class Cellmap
         $new_height = 0;
       }
 
-      if ( $frame instanceof Table_Cell_Frame_Decorator ) {
+      if ( $frame instanceof CellDecorator ) {
         $frame->set_cell_height($new_height);
       }
       else {

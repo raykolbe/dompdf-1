@@ -2,7 +2,10 @@
 
 namespace DOMPDF\Table\Row;
 
+use DOMPDF\DOMPDF;
+use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Decorator as FrameDecorator;
+use DOMPDF\Table\Decorator as TableDecorator;
 
 /**
  * @package dompdf
@@ -34,7 +37,7 @@ class Decorator extends FrameDecorator
   function normalise() {
 
     // Find our table parent
-    $p = Table_Frame_Decorator::find_parent_table($this);
+    $p = TableDecorator::find_parent_table($this);
     
     $erroneous_frames = array();
     foreach ($this->get_children() as $child) {      

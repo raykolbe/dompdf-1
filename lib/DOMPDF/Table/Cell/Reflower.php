@@ -3,6 +3,8 @@
 namespace DOMPDF\Table\Cell;
 
 use DOMPDF\Block\Reflower as BlockReflower;
+use DOMPDF\Block\Decorator as BlockDecorator;
+use DOMPDF\Table\Decorator as TableDecorator;
 
 /**
  * @package dompdf
@@ -21,17 +23,17 @@ class Reflower extends BlockReflower
 {
   //........................................................................
 
-  function __construct(Block_Frame_Decorator $frame) {
+  function __construct(BlockDecorator $frame) {
     parent::__construct($frame);
   }
 
   //........................................................................
 
-  function reflow(Block_Frame_Decorator $block = null) {
+  function reflow(BlockDecorator $block = null) {
 
     $style = $this->_frame->get_style();
 
-    $table = Table_Frame_Decorator::find_parent_table($this->_frame);
+    $table = TableDecorator::find_parent_table($this->_frame);
     $cellmap = $table->get_cellmap();
 
     list($x, $y) = $cellmap->get_frame_position($this->_frame);
@@ -120,5 +122,4 @@ class Reflower extends BlockReflower
     $this->vertical_align();
 
   }
-
 }

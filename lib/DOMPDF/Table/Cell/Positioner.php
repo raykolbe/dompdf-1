@@ -3,6 +3,8 @@
 namespace DOMPDF\Table\Cell;
 
 use DOMPDF\Positioner\AbstractPositioner;
+use DOMPDF\Frame\Decorator as FrameDecorator;
+use DOMPDF\Table\Decorator as TableDecorator;
 
 /**
  * @package dompdf
@@ -19,13 +21,13 @@ use DOMPDF\Positioner\AbstractPositioner;
  */
 class Positioner extends AbstractPositioner
 {
-  function __construct(Frame_Decorator $frame) { parent::__construct($frame); }
+  function __construct(FrameDecorator $frame) { parent::__construct($frame); }
   
   //........................................................................
 
   function position() {
 
-    $table = Table_Frame_Decorator::find_parent_table($this->_frame);
+    $table = TableDecorator::find_parent_table($this->_frame);
     $cellmap = $table->get_cellmap();
     $this->_frame->set_position($cellmap->get_frame_position($this->_frame));
 

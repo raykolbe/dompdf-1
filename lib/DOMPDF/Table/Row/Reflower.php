@@ -3,6 +3,10 @@
 namespace DOMPDF\Table\Row;
 
 use DOMPDF\Frame\Reflower as FrameReflower;
+use DOMPDF\Table\Decorator as TableDecorator;
+use DOMPDF\Table\Row\Decorator as RowDecorator;
+use DOMPDF\Block\Decorator as BlockDecorator;
+use DOMPDF\Exception;
 
 /**
  * @package dompdf
@@ -19,13 +23,13 @@ use DOMPDF\Frame\Reflower as FrameReflower;
  */
 class Reflower extends FrameReflower
 {
-  function __construct(Table_Row_Frame_Decorator $frame) {
+  function __construct(RowDecorator $frame) {
     parent::__construct($frame);
   }
 
   //........................................................................
 
-  function reflow(Block_Frame_Decorator $block = null) {
+  function reflow(BlockDecorator $block = null) {
     $page = $this->_frame->get_root();
 
     if ( $page->is_full() )
@@ -48,7 +52,7 @@ class Reflower extends FrameReflower
     if ( $page->is_full() )
       return;
 
-    $table = Table_Frame_Decorator::find_parent_table($this->_frame);
+    $table = TableDecorator::find_parent_table($this->_frame);
     $cellmap = $table->get_cellmap();
     $style->width = $cellmap->get_frame_width($this->_frame);
     $style->height = $cellmap->get_frame_height($this->_frame);
@@ -60,6 +64,6 @@ class Reflower extends FrameReflower
   //........................................................................
 
   function get_min_max_width() {
-    throw new DOMPDF_Exception("Min/max width is undefined for table rows");
+    throw new Exception("Min/max width is undefined for table rows");
   }
 }

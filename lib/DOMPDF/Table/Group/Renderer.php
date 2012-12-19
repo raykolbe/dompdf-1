@@ -3,6 +3,7 @@
 namespace DOMPDF\Table\Group;
 
 use DOMPDF\Block\Renderer as BlockRenderer;
+use DOMPDF\Frame\Frame;
 
 /**
  * @package dompdf

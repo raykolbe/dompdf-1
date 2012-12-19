@@ -2,7 +2,12 @@
 
 namespace DOMPDF\Table;
 
+use DOMPDF\DOMPDF;
 use DOMPDF\Frame\Decorator as FrameDecorator;
+use DOMPDF\Frame\Factory as FrameFactory;
+use DOMPDF\Table\Cellmap;
+
+use \DOMNode;
 
 /**
  * @package dompdf
@@ -283,7 +288,7 @@ class Decorator extends FrameDecorator
           // Okay, I have absolutely no idea why I need this clone here, but
           // if it's omitted, php (as of 2004-07-28) segfaults.
           $frame->set_style(clone $style);
-          $table_row = Frame_Factory::decorate_frame($frame, $this->_dompdf, $this->_root);
+          $table_row = FrameFactory::decorate_frame($frame, $this->_dompdf, $this->_root);
 
           // Add the cell to the row
           $table_row->append_child($child);
