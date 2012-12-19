@@ -2,7 +2,9 @@
 
 namespace DOMPDF\Text;
 
+use DOMPDF\Frame\Frame;
 use DOMPDF\Renderer\AbstractRenderer;
+use DOMPDF\Canvas\Adapter\CPDF;
 
 /**
  * @package dompdf
@@ -92,7 +94,7 @@ class Renderer extends AbstractRenderer
     $linethrough_offset  = $size * self::LINETHROUGH_OFFSET;
     $underline_position  = -0.08;
     
-    if ( $this->_canvas instanceof CPDF_Adapter ) {
+    if ( $this->_canvas instanceof CPDF ) {
       $cpdf_font = $this->_canvas->get_cpdf()->fonts[$style->font_family];
       
       if (isset($cpdf_font["UnderlinePosition"])) {
@@ -150,7 +152,7 @@ class Renderer extends AbstractRenderer
     }
     
     if (DEBUG_LAYOUT && DEBUG_LAYOUT_LINES) {
-      $text_width = Font_Metrics::get_text_width($text, $font, $frame_font_size);
+      $text_width = FontMetrics::get_text_width($text, $font, $frame_font_size);
       $this->_debug_layout(array($x, $y, $text_width+($line->wc-1)*$word_spacing, $frame_font_size), "orange", array(0.5, 0.5));
     }
   }

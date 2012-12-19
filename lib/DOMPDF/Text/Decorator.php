@@ -2,7 +2,12 @@
 
 namespace DOMPDF\Text;
 
+use DOMPDF\DOMPDF;
+use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Decorator as FrameDecorator;
+use DOMPDF\Font\Metrics as FontMetrics;
+use DOMPDF\Inline\Decorator as InlineDecorator;
+use DOMPDF\Exception;
 
 /**
  * @package dompdf
@@ -29,7 +34,7 @@ class Decorator extends FrameDecorator
   
   function __construct(Frame $frame, DOMPDF $dompdf) {
     if ( !$frame->is_text_node() )
-      throw new DOMPDF_Exception("Text_Decorator can only be applied to #text nodes.");
+      throw new Exception("Text_Decorator can only be applied to #text nodes.");
     
     parent::__construct($frame, $dompdf);
     $this->_text_spacing = null;
@@ -91,7 +96,7 @@ class Decorator extends FrameDecorator
     pre_r(($style->line_height / $size) * Font_Metrics::get_font_height($font, $size));
     */
 
-    return ($style->line_height / $size) * Font_Metrics::get_font_height($font, $size);
+    return ($style->line_height / $size) * FontMetrics::get_font_height($font, $size);
     
   }
 
@@ -110,7 +115,7 @@ class Decorator extends FrameDecorator
     $char_spacing = $style->length_in_pt($style->letter_spacing);
     
     // Re-adjust our width to account for the change in spacing
-    $style->width = Font_Metrics::get_text_width($this->get_text(), $style->font_family, $style->font_size, $spacing, $char_spacing);
+    $style->width = FontMetrics::get_text_width($this->get_text(), $style->font_family, $style->font_size, $spacing, $char_spacing);
   }
 
   //........................................................................
@@ -124,7 +129,7 @@ class Decorator extends FrameDecorator
     $word_spacing = $style->length_in_pt($style->word_spacing);
     $char_spacing = $style->length_in_pt($style->letter_spacing);
 
-    return $style->width = Font_Metrics::get_text_width($text, $font, $size, $word_spacing, $char_spacing);
+    return $style->width = FontMetrics::get_text_width($text, $font, $size, $word_spacing, $char_spacing);
   }
   
   //........................................................................
@@ -155,7 +160,7 @@ class Decorator extends FrameDecorator
     $p = $this->get_parent();
     $p->insert_child_after($deco, $this, false);
 
-    if ( $p instanceof Inline_Frame_Decorator )
+    if ( $p instanceof InlineDecorator )
       $p->split($deco);
 
     return $deco;
@@ -175,4 +180,4 @@ class Decorator extends FrameDecorator
 
 }
 
-Text_Frame_Decorator::$_buggy_splittext = PHP_VERSION_ID < 50207;
+Decorator::$_buggy_splittext = PHP_VERSION_ID < 50207;

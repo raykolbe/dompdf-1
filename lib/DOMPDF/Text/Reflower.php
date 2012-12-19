@@ -3,6 +3,9 @@
 namespace DOMPDF\Text;
 
 use DOMPDF\Frame\Reflower as FrameReflower;
+use DOMPDF\Text\Decorator as TextDecorator;
+use DOMPDF\Font\Metrics as FontMetrics;
+use DOMPDF\Block\Decorator as BlockDecorator;
 
 /**
  * @package dompdf
@@ -32,7 +35,7 @@ class Reflower extends FrameReflower
   
   public static $_whitespace_pattern = "/[ \t\r\n\f]+/u";
 
-  function __construct(Text_Frame_Decorator $frame) { parent::__construct($frame); }
+  function __construct(TextDecorator $frame) { parent::__construct($frame); }
 
   //........................................................................
 
@@ -62,7 +65,7 @@ class Reflower extends FrameReflower
     $char_spacing = $style->length_in_pt($style->letter_spacing);
 
     // Determine the frame width including margin, padding & border
-    $text_width = Font_Metrics::get_text_width($text, $font, $size, $word_spacing, $char_spacing);
+    $text_width = FontMetrics::get_text_width($text, $font, $size, $word_spacing, $char_spacing);
     $mbp_width =
       $style->length_in_pt( array( $style->margin_left,
                                    $style->border_left_width,
@@ -99,7 +102,7 @@ class Reflower extends FrameReflower
     // @todo support <shy>, <wbr>
     for ($i = 0; $i < $wc; $i += 2) {
       $word = $words[$i] . (isset($words[$i+1]) ? $words[$i+1] : "");
-      $word_width = Font_Metrics::get_text_width($word, $font, $size, $word_spacing, $char_spacing);
+      $word_width = FontMetrics::get_text_width($word, $font, $size, $word_spacing, $char_spacing);
       if ( $width + $word_width + $mbp_width > $available_width )
         break;
 
@@ -118,7 +121,7 @@ class Reflower extends FrameReflower
       if ( $break_word ) {
         for ( $j = 0; $j < strlen($word); $j++ ) {
           $s .= $word[$j];
-          $_width = Font_Metrics::get_text_width($s, $font, $size, $word_spacing, $char_spacing);
+          $_width = FontMetrics::get_text_width($s, $font, $size, $word_spacing, $char_spacing);
           if ($_width > $available_width) {
             break;
           }
@@ -169,7 +172,7 @@ class Reflower extends FrameReflower
     $font = $style->font_family;
 
     // Determine the text height
-    $style->height = Font_Metrics::get_font_height( $font, $size );
+    $style->height = FontMetrics::get_font_height( $font, $size );
 
     $split = false;
     $add_line = false;
@@ -314,7 +317,7 @@ class Reflower extends FrameReflower
 
   //........................................................................
 
-  function reflow(Block_Frame_Decorator $block = null) {
+  function reflow(BlockDecorator $block = null) {
     $frame = $this->_frame;
     $page = $frame->get_root();
     $page->check_forced_page_break($this->_frame);
@@ -428,7 +431,7 @@ class Reflower extends FrameReflower
 
     }
 
-    $max = Font_Metrics::get_text_width($str, $font, $size, $word_spacing, $char_spacing);
+    $max = FontMetrics::get_text_width($str, $font, $size, $word_spacing, $char_spacing);
     
     $delta = $style->length_in_pt(array($style->margin_left,
                                         $style->border_left_width,
