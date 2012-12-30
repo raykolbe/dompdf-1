@@ -715,8 +715,6 @@ class Style
         $this->_prop_cache[$prop] = null;
 
         if (!isset(self::$_defaults[$prop])) {
-            global $_dompdf_warnings;
-            $_dompdf_warnings[] = "'$prop' is not a valid CSS2 property.";
             return;
         }
 
@@ -799,8 +797,7 @@ class Style
         if (isset($this->_font_family)) {
             return $this->_font_family;
         }
-
-        $DEBUGCSS = DEBUGCSS; //=DEBUGCSS; Allow override of global setting for ad hoc debug
+        
         // Select the appropriate font.  First determine the subtype, then check
         // the specified font-families for a candidate.
         // Resolve font-weight
@@ -830,13 +827,7 @@ class Style
         } else {
             $subtype = "normal";
         }
-
-        // Resolve the font family
-        if ($DEBUGCSS) {
-            print "<pre>[get_font_family:";
-            print '(' . $this->_props["font_family"] . '.' . $font_style . '.' . $this->__get("font_weight") . '.' . $weight . '.' . $subtype . ')';
-        }
-
+        
         $families = preg_split("/\s*,\s*/", $this->_props["font_family"]);
 
         $font = null;
@@ -844,27 +835,17 @@ class Style
             //remove leading and trailing string delimiters, e.g. on font names with spaces;
             //remove leading and trailing whitespace
             $family = trim($family, " \t\n\r\x0B\"'");
-            if ($DEBUGCSS) {
-                print '(' . $family . ')';
-            }
             $font = FontMetrics::get_font($family, $subtype);
 
             if ($font) {
-                if ($DEBUGCSS)
-                    print '(' . $font . ")get_font_family]\n</pre>";
                 return $this->_font_family = $font;
             }
         }
 
         $family = null;
-        if ($DEBUGCSS) {
-            print '(default)';
-        }
         $font = FontMetrics::get_font($family, $subtype);
 
         if ($font) {
-            if ($DEBUGCSS)
-                print '(' . $font . ")get_font_family]\n</pre>";
             return$this->_font_family = $font;
         }
 
@@ -1522,7 +1503,6 @@ class Style
 
     protected function _image($val)
     {
-        $DEBUGCSS = DEBUGCSS;
         $parsed_url = "none";
 
         if (mb_strpos($val, "url") === false) {
@@ -1549,13 +1529,7 @@ class Style
                 $path = Url::build($this->_stylesheet->get_protocol(), $this->_stylesheet->get_host(), $this->_stylesheet->get_base_path(), $val);
             }
         }
-        if ($DEBUGCSS) {
-            print "<pre>[_image\n";
-            print_r($parsed_url);
-            print $this->_stylesheet->get_protocol() . "\n" . $this->_stylesheet->get_base_path() . "\n" . $path . "\n";
-            print "_image]</pre>";
-            ;
-        }
+        
         return $path;
     }
 

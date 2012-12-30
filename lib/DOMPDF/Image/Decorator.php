@@ -50,10 +50,6 @@ class Decorator extends FrameDecorator
         parent::__construct($frame, $dompdf);
         $url = $frame->get_node()->getAttribute("src");
 
-        $debug_png = $dompdf->get_option("debug_png");
-        if ($debug_png)
-            print '[__construct ' . $url . ']';
-
         list($this->_image_url, /* $type */, $this->_image_msg) = ImageCache::resolve_url(
                         $url, $dompdf->get_protocol(), $dompdf->get_host(), $dompdf->get_base_path(), $dompdf
         );

@@ -399,12 +399,6 @@ class Stylesheet
             $d++;
         }
 
-        if (DEBUGCSS) {
-            /* DEBUGCSS */ print "<pre>\n";
-            /* DEBUGCSS */ printf("_specificity(): 0x%08x \"%s\"\n", ($a << 24) | ($b << 16) | ($c << 8) | ($d), $selector);
-            /* DEBUGCSS */ print "</pre>";
-        }
-
         return self::$_stylesheet_origins[$origin] + ($a << 24) | ($b << 16) | ($c << 8) | ($d);
     }
 
@@ -942,19 +936,6 @@ class Stylesheet
                 // Sort by specificity
                 ksort($applied_styles);
 
-                if (DEBUGCSS) {
-                    $debug_nodename = $frame->get_node()->nodeName;
-                    print "<pre>\n[$debug_nodename\n";
-                    foreach ($applied_styles as $spec => $arr) {
-                        printf("specificity: 0x%08x\n", $spec);
-                        foreach ($arr as $s) {
-                            print "[\n";
-                            $s->debug_print();
-                            print "]\n";
-                        }
-                    }
-                }
-
                 // Merge the new styles with the inherited styles
                 foreach ($applied_styles as $arr) {
                     foreach ($arr as $s) {
@@ -965,23 +946,7 @@ class Stylesheet
 
             // Inherit parent's styles if required
             if ($p) {
-
-                if (DEBUGCSS) {
-                    print "inherit:\n";
-                    print "[\n";
-                    $p->get_style()->debug_print();
-                    print "]\n";
-                }
-
                 $style->inherit($p->get_style());
-            }
-
-            if (DEBUGCSS) {
-                print "DomElementStyle:\n";
-                print "[\n";
-                $style->debug_print();
-                print "]\n";
-                print "/$debug_nodename]\n</pre>";
             }
 
             $frame->set_style($style);
@@ -1135,7 +1100,6 @@ class Stylesheet
 
     protected function _image($val)
     {
-        $DEBUGCSS = DEBUGCSS;
         $parsed_url = "none";
 
         if (mb_strpos($val, "url") === false) {
@@ -1162,14 +1126,6 @@ class Stylesheet
             } else {
                 $path = Url::build($this->get_protocol(), $this->get_host(), $this->get_base_path(), $val);
             }
-        }
-
-        if ($DEBUGCSS) {
-            print "<pre>[_image\n";
-            print_r($parsed_url);
-            print $this->get_protocol() . "\n" . $this->get_base_path() . "\n" . $path . "\n";
-            print "_image]</pre>";
-            ;
         }
 
         return $path;
@@ -1283,9 +1239,6 @@ class Stylesheet
     {
         $properties = preg_split("/;(?=(?:[^\(]*\([^\)]*\))*(?![^\)]*\)))/", $str);
 
-        if (DEBUGCSS)
-            print '[_parse_properties';
-
         // Create the style
         $style = new Style($this);
 
@@ -1312,8 +1265,6 @@ class Stylesheet
               }
               $prop = trim($prop);
              */
-            if (DEBUGCSS)
-                print '(';
 
             $important = false;
             $prop = trim($prop);
@@ -1328,22 +1279,16 @@ class Stylesheet
             }
 
             if ($prop === "") {
-                if (DEBUGCSS)
-                    print 'empty)';
                 continue;
             }
 
             $i = mb_strpos($prop, ":");
             if ($i === false) {
-                if (DEBUGCSS)
-                    print 'novalue' . $prop . ')';
                 continue;
             }
 
             $prop_name = rtrim(mb_strtolower(mb_substr($prop, 0, $i)));
             $value = ltrim(mb_substr($prop, $i + 1));
-            if (DEBUGCSS)
-                print $prop_name . ':=' . $value . ($important ? '!IMPORTANT' : '') . ')';
             //New style, anyway empty
             //if ($important || !$style->important_get($prop_name) ) {
             //$style->$prop_name = array($value,$important);
@@ -1357,8 +1302,6 @@ class Stylesheet
             $style->$prop_name = $value;
             //$style->props_set($prop_name, $value);
         }
-        if (DEBUGCSS)
-            print '_parse_properties]';
 
         return $style;
     }
@@ -1378,14 +1321,11 @@ class Stylesheet
         $str = preg_replace($patterns, $replacements, $str);
 
         $sections = explode("}", $str);
-        if (DEBUGCSS)
-            print '[_parse_sections';
+        
         foreach ($sections as $sect) {
             $i = mb_strpos($sect, "{");
 
             $selectors = explode(",", mb_substr($sect, 0, $i));
-            if (DEBUGCSS)
-                print '[section';
             $style = $this->_parse_properties(trim(mb_substr($sect, $i + 1)));
 
             // Assign it to the selected elements
@@ -1393,23 +1333,12 @@ class Stylesheet
                 $selector = trim($selector);
 
                 if ($selector == "") {
-                    if (DEBUGCSS)
-                        print '#empty#';
                     continue;
                 }
-                if (DEBUGCSS)
-                    print '#' . $selector . '#';
-                //if (DEBUGCSS) { if (strpos($selector,'p') !== false) print '!!!p!!!#'; }
 
                 $this->add_style($selector, $style);
             }
-
-            if (DEBUGCSS)
-                print 'section]';
         }
-
-        if (DEBUGCSS)
-            print '_parse_sections]';
     }
 
     /**

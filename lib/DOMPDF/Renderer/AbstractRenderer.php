@@ -84,10 +84,6 @@ abstract class Renderer
         $box_width = $width;
         $box_height = $height;
 
-        //debugpng
-        if (DEBUGPNG)
-            print '[_background_image ' . $url . ']';
-
         list($img, $type, /* $msg */) = Image_Cache::resolve_url(
                         $url, $sheet->get_protocol(), $sheet->get_host(), $sheet->get_base_path(), $this->_dompdf
         );
@@ -400,21 +396,10 @@ abstract class Renderer
             @unlink($tmp_name);
             $tmp_file = "$tmp_name.png";
 
-            //debugpng
-            if (DEBUGPNG)
-                print '[_background_image ' . $tmp_file . ']';
-
             imagepng($bg, $tmp_file);
             $this->_canvas->image($tmp_file, $x, $y, $width, $height);
             imagedestroy($bg);
-
-            //debugpng
-            if (DEBUGPNG)
-                print '[_background_image unlink ' . $tmp_file . ']';
-
-            if (!DEBUGKEEPTEMP) {
-                unlink($tmp_file);
-            }
+            unlink($tmp_file);
         }
 
         $this->_canvas->clipping_end();
@@ -740,10 +725,5 @@ abstract class Renderer
         if (is_numeric($opacity) && $opacity <= 1.0 && $opacity >= 0.0) {
             $this->_canvas->set_opacity($opacity);
         }
-    }
-
-    protected function _debug_layout($box, $color = "red", $style = array())
-    {
-        $this->_canvas->rectangle($box[0], $box[1], $box[2], $box[3], Color::parse($color), 0.1, $style);
     }
 }

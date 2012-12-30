@@ -145,10 +145,5 @@ class Renderer extends AbstractRenderer
             $x2 = $x + $width + $dx + self::DECO_EXTENSION;
             $this->_canvas->line($x1, $deco_y, $x2, $deco_y, $color, $line_thickness);
         }
-
-        if (DEBUG_LAYOUT && DEBUG_LAYOUT_LINES) {
-            $text_width = FontMetrics::get_text_width($text, $font, $frame_font_size);
-            $this->_debug_layout(array($x, $y, $text_width + ($line->wc - 1) * $word_spacing, $frame_font_size), "orange", array(0.5, 0.5));
-        }
     }
 }

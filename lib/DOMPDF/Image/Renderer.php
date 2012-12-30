@@ -113,12 +113,5 @@ class Renderer extends BlockRenderer
                 $this->_canvas->text($x, $_y + $i * $height, $_part, "times", $height * 0.8, array(0.5, 0.5, 0.5));
             }
         }
-
-        if (DEBUG_LAYOUT && DEBUG_LAYOUT_BLOCKS) {
-            $this->_debug_layout($frame->get_border_box(), "blue");
-            if (DEBUG_LAYOUT_PADDINGBOX) {
-                $this->_debug_layout($frame->get_padding_box(), "blue", array(0.5, 0.5));
-            }
-        }
     }
 }

@@ -51,13 +51,6 @@ class Renderer extends AbstractRenderer
      */
     public function render(Frame $frame)
     {
-        global $_dompdf_debug;
-
-        if ($_dompdf_debug) {
-            echo $frame;
-            flush();
-        }
-
         $style = $frame->get_style();
 
         if (in_array($style->visibility, array("hidden", "collapse"))) {

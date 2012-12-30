@@ -224,10 +224,7 @@ class CPDF implements Canvas
     public function __destruct()
     {
         foreach ($this->_image_cache as $img) {
-            if (DEBUGPNG)
-                print '[__destruct unlink ' . $img . ']';
-            if (!DEBUGKEEPTEMP)
-                unlink($img);
+            unlink($img);
         }
     }
 
@@ -660,35 +657,21 @@ class CPDF implements Canvas
     {
         list($width, $height, $type) = ImageSize::execute($img);
 
-        $debug_png = $this->_dompdf->get_option("debug_png");
-
-        if ($debug_png)
-            print "[image:$img|$width|$height|$type]";
-
         switch ($type) {
             case IMAGETYPE_JPEG:
-                if ($debug_png)
-                    print '!!!jpg!!!';
                 $this->_pdf->addJpegFromFile($img, $x, $this->y($y) - $h, $w, $h);
                 break;
 
             case IMAGETYPE_GIF:
             case IMAGETYPE_BMP:
-                if ($debug_png)
-                    print '!!!bmp or gif!!!';
                 // @todo use cache for BMP and GIF
                 $img = $this->_convert_gif_bmp_to_png($img, $type);
 
             case IMAGETYPE_PNG:
-                if ($debug_png)
-                    print '!!!png!!!';
-
                 $this->_pdf->addPngFromFile($img, $x, $this->y($y) - $h, $w, $h);
                 break;
 
             default:
-                if ($debug_png)
-                    print '!!!unknown!!!';
         }
     }
 

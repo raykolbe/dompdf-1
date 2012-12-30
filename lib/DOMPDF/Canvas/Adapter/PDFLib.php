@@ -1079,13 +1079,9 @@ class PDFLib implements Canvas
 
             while (!feof($fh))
                 echo fread($fh, $chunk);
+            
             fclose($fh);
-
-            //debugpng
-            if (DEBUGPNG)
-                print '[pdflib stream unlink ' . $this->_file . ']';
-            if (!DEBUGKEEPTEMP)
-                unlink($this->_file);
+            unlink($this->_file);
             $this->_file = null;
             unset($this->_file);
         }
@@ -1112,12 +1108,7 @@ class PDFLib implements Canvas
 
         else {
             $data = file_get_contents($this->_file);
-
-            //debugpng
-            if (DEBUGPNG)
-                print '[pdflib output unlink ' . $this->_file . ']';
-            if (!DEBUGKEEPTEMP)
-                unlink($this->_file);
+            unlink($this->_file);
             $this->_file = null;
             unset($this->_file);
         }

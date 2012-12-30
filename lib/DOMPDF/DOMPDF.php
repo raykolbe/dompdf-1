@@ -235,15 +235,6 @@ class DOMPDF
         "enable_javascript" => DOMPDF_ENABLE_JAVASCRIPT,
         "enable_html5_parser" => DOMPDF_ENABLE_HTML5PARSER,
         "enable_font_subsetting" => DOMPDF_ENABLE_FONTSUBSETTING,
-        // Debug
-        "debug_png" => DEBUGPNG,
-        "debug_keep_temp" => DEBUGKEEPTEMP,
-        "debug_css" => DEBUGCSS,
-        "debug_layout" => DEBUG_LAYOUT,
-        "debug_layout_lines" => DEBUG_LAYOUT_LINES,
-        "debug_layout_blocks" => DEBUG_LAYOUT_BLOCKS,
-        "debug_layout_inline" => DEBUG_LAYOUT_INLINE,
-        "debug_layout_padding_box" => DEBUG_LAYOUT_PADDINGBOX,
         // Admin
         "admin_username" => DOMPDF_ADMIN_USERNAME,
         "admin_password" => DOMPDF_ADMIN_PASSWORD,
@@ -961,17 +952,6 @@ class DOMPDF
 
         // Clean up cached images
         ImageCache::clear();
-
-        global $_dompdf_warnings, $_dompdf_show_warnings;
-        if ($_dompdf_show_warnings) {
-            echo '<b>DOMPDF Warnings</b><br><pre>';
-            foreach ($_dompdf_warnings as $msg) {
-                echo $msg . "\n";
-            }
-            echo $this->get_canvas()->get_cpdf()->messages;
-            echo '</pre>';
-            flush();
-        }
 
         $this->restore_locale();
     }
