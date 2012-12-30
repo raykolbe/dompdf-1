@@ -35,7 +35,7 @@ class TCPDF implements Canvas
      *
      * @var array;
      */
-    static public $PAPER_SIZES = array(); // Set to CPDF_Adapter::$PAPER_SIZES below.
+    public static $PAPER_SIZES = array(); // Set to CPDF_Adapter::$PAPER_SIZES below.
 
     /**
      * @var DOMPDF

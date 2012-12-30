@@ -351,7 +351,7 @@ class AttributeTranslator
      *
      * @return null
      */
-    static protected function _set_table_cellpadding(DOMElement $node, $value)
+    protected static function _set_table_cellpadding(DOMElement $node, $value)
     {
         $cell_list = self::get_cell_list($node);
 
