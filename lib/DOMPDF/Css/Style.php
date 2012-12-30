@@ -569,7 +569,6 @@ class Style
      */
     public function inherit(Style $parent)
     {
-
         // Set parent font size
         $this->_parent_font_size = $parent->get_font_size();
 
