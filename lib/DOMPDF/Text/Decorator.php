@@ -27,9 +27,6 @@ use DOMPDF\Exception;
 class Decorator extends FrameDecorator 
 {
     protected $_text_spacing;
-    
-    // buggy DOMText::splitText (PHP < 5.2.7)
-    public static $_buggy_splittext;
 
     public function __construct(Frame $frame, DOMPDF $dompdf)
     {
@@ -122,19 +119,8 @@ class Decorator extends FrameDecorator
     {
         if ($offset == 0)
             return null;
-
-        if (self::$_buggy_splittext) {
-            // workaround to solve DOMText::spliText() bug parsing multibyte strings
-            $node = $this->_frame->get_node();
-            $txt0 = $node->substringData(0, $offset);
-            $txt1 = $node->substringData($offset, mb_strlen($node->textContent) - 1);
-
-            $node->replaceData(0, mb_strlen($node->textContent), $txt0);
-            $split = $node->parentNode->appendChild(new DOMText($txt1));
-        } else {
-            $split = $this->_frame->get_node()->splitText($offset);
-        }
-
+        
+        $split = $this->_frame->get_node()->splitText($offset);
         $deco = $this->copy($split);
 
         $p = $this->get_parent();
@@ -156,5 +142,3 @@ class Decorator extends FrameDecorator
         $this->_frame->get_node()->data = $text;
     }
 }
-
-Decorator::$_buggy_splittext = PHP_VERSION_ID < 50207;
