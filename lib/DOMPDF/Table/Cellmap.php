@@ -6,6 +6,7 @@ use DOMPDF\Frame\Frame;
 use DOMPDF\Table\Decorator as TableDecorator;
 use DOMPDF\Table\Cell\Decorator as CellDecorator;
 use DOMPDF\Exception;
+use DOMPDF\Number\IsPercent;
 
 /**
  * @package dompdf
@@ -134,9 +135,6 @@ class Cellmap
     $this->reset();
   }
   
-  function __destruct() {
-    clear_object($this);
-  }
   //........................................................................
 
   function reset() {
@@ -535,7 +533,7 @@ class Cellmap
       $width = $style->width;
 
       $val = null;
-      if ( is_percent($width) ) {
+      if ( IsPercent::validate($width) ) {
         $var = "percent";
         $val = (float)rtrim($width, "% ") / $colspan;
       }
@@ -767,32 +765,5 @@ class Cellmap
       }
     }
 
-  }
-
-  //........................................................................
-
-  // Used for debugging:
-  function __toString() {
-    $str = "";
-    $str .= "Columns:<br/>";
-    $str .= pre_r($this->_columns, true);
-    $str .=  "Rows:<br/>";
-    $str .= pre_r($this->_rows, true);
-
-    $str .=  "Frames:<br/>";
-    $arr = array();
-    foreach ( $this->_frames as $key => $val ) {
-      $arr[$key] = array("columns" => $val["columns"], "rows" => $val["rows"]);
-    }
-    
-    $str .= pre_r($arr, true);
-
-    if ( php_sapi_name() == "cli" ) {
-      $str = strip_tags(str_replace(array("<br/>","<b>","</b>"),
-                                    array("\n",chr(27)."[01;33m", chr(27)."[0m"),
-                                    $str));
-    }
-    
-    return $str;
   }
 }

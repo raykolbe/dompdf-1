@@ -8,7 +8,7 @@ use DOMPDF\Font\Metrics as FontMetrics;
 use DOMPDF\Exception;
 use DOMPDF\Image\Cache as ImageCache;
 use DOMPDF\Renderer\PHPEvaluator;
-use DOMPDF\Canvas\Adapter\PDFLib;
+use DOMPDF\Url\Url;
 
 /**
  * @package dompdf
@@ -852,11 +852,11 @@ class PDFLib implements Canvas
         $this->_pdf->create_annotation($x, $y, $x + $width, $y + $height, 'Link', "contents={$url} destname=". substr($url,1) . " linewidth=0");
     } else {
 
-      list($proto, $host, $path, $file) = explode_url($url);
+      list($proto, $host, $path, $file) = Url::explode($url);
 
       if ( $proto == "" || $proto === "file://" )
         return; // Local links are not allowed
-      $url = build_url($proto, $host, $path, $file);
+      $url = Url::build($proto, $host, $path, $file);
       $url = '{' . rawurldecode($url) . '}';
       
       $action = $this->_pdf->create_action("URI", "url=" . $url);

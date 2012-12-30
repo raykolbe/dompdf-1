@@ -7,6 +7,7 @@ use DOMPDF\Css\Color;
 use DOMPDF\Exception;
 use DOMPDF\Font\Metrics as FontMetrics;
 use DOMPDF\Canvas\Adapter\CPDF;
+use DOMPDF\Url\Url;
 
 /**
  * @package dompdf
@@ -398,7 +399,7 @@ class Style
    * "Destructor": forcibly free all references held by this object
    */
   function dispose() {
-    clear_object($this);
+    return;
   }
   
   function set_frame(Frame $frame) {
@@ -1499,7 +1500,7 @@ class Style
       $val = preg_replace("/url\(['\"]?([^'\")]+)['\"]?\)/","\\1", trim($val));
 
       // Resolve the url now in the context of the current stylesheet
-      $parsed_url = explode_url($val);
+      $parsed_url = Url::explode($val);
       if ( $parsed_url["protocol"] == "" && $this->_stylesheet->get_protocol() == "" ) {
         if ($parsed_url["path"][0] === '/' || $parsed_url["path"][0] === '\\' ) {
           $path = $_SERVER["DOCUMENT_ROOT"].'/';
@@ -1516,7 +1517,7 @@ class Style
         }
       }
       else {
-        $path = build_url($this->_stylesheet->get_protocol(),
+        $path = Url::build($this->_stylesheet->get_protocol(),
                           $this->_stylesheet->get_host(),
                           $this->_stylesheet->get_base_path(),
                           $val);
@@ -2413,29 +2414,4 @@ class Style
     $this->_prop_cache["counter_increment"] = null;
     $this->_props["counter_increment"] = $value;
   }
-
-  /**
-   * Generate a string representation of the Style
-   *
-   * This dumps the entire property array into a string via print_r.  Useful
-   * for debugging.
-   *
-   * @return string
-   */
- /*DEBUGCSS print: see below additional debugging util*/
-  function __toString() {
-    return print_r(array_merge(array("parent_font_size" => $this->_parent_font_size),
-                               $this->_props), true);
-  }
-
-/*DEBUGCSS*/  function debug_print() {
-/*DEBUGCSS*/    print "parent_font_size:".$this->_parent_font_size . ";\n";
-/*DEBUGCSS*/    foreach($this->_props as $prop => $val ) {
-/*DEBUGCSS*/      print $prop.':'.$val;
-/*DEBUGCSS*/      if (isset($this->_important_props[$prop])) {
-/*DEBUGCSS*/        print '!important';
-/*DEBUGCSS*/      }
-/*DEBUGCSS*/      print ";\n";
-/*DEBUGCSS*/    }
-/*DEBUGCSS*/  }
 }

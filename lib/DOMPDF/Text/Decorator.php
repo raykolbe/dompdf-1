@@ -58,15 +58,7 @@ class Decorator extends FrameDecorator
 //      $this->_frame->get_node()->data = $this->_frame->get_style()->content;
 //      $this->_frame->get_style()->content = "normal";
 //    }
-
-//      pre_r("---");
-//      $style = $this->_frame->get_style();
-//      var_dump($text = $this->_frame->get_node()->data);
-//      var_dump($asc = utf8_decode($text));
-//      for ($i = 0; $i < strlen($asc); $i++)
-//        pre_r("$i: " . $asc[$i] . " - " . ord($asc[$i]));
-//      pre_r("width: " . Font_Metrics::get_text_width($text, $style->font_family, $style->font_size));
-
+      
     return $this->_frame->get_node()->data;
   }
 
@@ -87,14 +79,6 @@ class Decorator extends FrameDecorator
     $style = $this->get_parent()->get_style();
     $font = $style->font_family;
     $size = $style->font_size;
-
-    /*
-    pre_r('-----');
-    pre_r($style->line_height);
-    pre_r($style->font_size);
-    pre_r(Font_Metrics::get_font_height($font, $size));
-    pre_r(($style->line_height / $size) * Font_Metrics::get_font_height($font, $size));
-    */
 
     return ($style->line_height / $size) * FontMetrics::get_font_height($font, $size);
     

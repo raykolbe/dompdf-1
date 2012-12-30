@@ -76,17 +76,6 @@ class Reflower extends FrameReflower
                                    
     $frame_width = $text_width + $mbp_width;
 
-// Debugging:
-//    pre_r("Text: '" . htmlspecialchars($text). "'");
-//    pre_r("width: " .$frame_width);
-//    pre_r("textwidth + delta: $text_width + $mbp_width");
-//    pre_r("font-size: $size");
-//    pre_r("cb[w]: " .$line_width);
-//    pre_r("available width: " . $available_width);
-//    pre_r("current line width: " . $current_line_width);
-
-//     pre_r($words);
-
     if ( $frame_width <= $available_width )
       return false;
 
@@ -141,11 +130,6 @@ class Reflower extends FrameReflower
     }
 
     $offset = mb_strlen($str);
-
-// More debugging:
-//     pre_var_dump($str);
-//     pre_r("Width: ". $width);
-//     pre_r("Offset: " . $offset);
 
     return $offset;
 

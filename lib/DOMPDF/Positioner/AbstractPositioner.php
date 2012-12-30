@@ -32,12 +32,6 @@ abstract class AbstractPositioner
     $this->_frame = $frame;
   }
   
-  /**
-   * Class destructor
-   */
-  function __destruct() {
-    clear_object($this);
-  }
   //........................................................................
 
   abstract function position();

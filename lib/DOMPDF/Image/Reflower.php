@@ -5,6 +5,8 @@ namespace DOMPDF\Image;
 use DOMPDF\Frame\Reflower as FrameReflower;
 use DOMPDF\Image\Decorator as ImageDecorator;
 use DOMPDF\Block\Decorator as BlockDecorator;
+use DOMPDF\Number\IsPercent;
+use DOMPDF\Gd\ImageSize;
 
 /**
  * @package dompdf
@@ -48,7 +50,7 @@ class Reflower extends FrameReflower
   function get_min_max_width() {
     if (DEBUGPNG) {
       // Determine the image's size. Time consuming. Only when really needed?
-      list($img_width, $img_height) = dompdf_getimagesize($this->_frame->get_image_url());
+      list($img_width, $img_height) = ImageSize::execute($this->_frame->get_image_url());
       print "get_min_max_width() ".
         $this->_frame->get_style()->width.' '.
         $this->_frame->get_style()->height.';'.
@@ -72,7 +74,7 @@ class Reflower extends FrameReflower
     //special ignored unit: e.g. 10ex: e treated as exponent; x ignored; 10e completely invalid ->like auto
 
     $width = ($style->width > 0 ? $style->width : 0);
-    if ( is_percent($width) ) {
+    if ( IsPercent::validate($width) ) {
       $t = 0.0;
       for ($f = $this->_frame->get_parent(); $f; $f = $f->get_parent()) {
         $f_style = $f->get_style();
@@ -91,7 +93,7 @@ class Reflower extends FrameReflower
     }
 
     $height = ($style->height > 0 ? $style->height : 0);
-    if ( is_percent($height) ) {
+    if ( IsPercent::validate($height) ) {
       $t = 0.0;
       for ($f = $this->_frame->get_parent(); $f; $f = $f->get_parent()) {
         $f_style = $f->get_style();
@@ -111,7 +113,7 @@ class Reflower extends FrameReflower
 
     if ($width == 0 || $height == 0) {
       // Determine the image's size. Time consuming. Only when really needed!
-      list($img_width, $img_height) = dompdf_getimagesize($this->_frame->get_image_url());
+      list($img_width, $img_height) = ImageSize::execute($this->_frame->get_image_url());
       
       // don't treat 0 as error. Can be downscaled or can be catched elsewhere if image not readable.
       // Resample according to px per inch

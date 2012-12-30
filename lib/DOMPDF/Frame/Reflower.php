@@ -5,6 +5,8 @@ namespace DOMPDF\Frame;
 use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Factory as FrameFactory;
 use DOMPDF\Block\Decorator as BlockDecorator;
+use DOMPDF\Number\IsPercent;
+use DOMPDF\String\UniChr;
 
 /**
  * @package dompdf
@@ -44,7 +46,7 @@ abstract class Reflower
   }
 
   function dispose() {
-    clear_object($this);
+    return;
   }
 
   /**
@@ -208,7 +210,7 @@ abstract class Reflower
     // Use specified width if it is greater than the minimum defined by the
     // content.  If the width is a percentage ignore it for now.
     $width = $style->width;
-    if ( $width !== "auto" && !is_percent($width) ) {
+    if ( $width !== "auto" && !IsPercent::validate($width) ) {
       $width = $style->length_in_pt($width, $cb_w);
       if ( $min < $width ) $min = $width;
       if ( $max < $width ) $max = $width;
@@ -241,7 +243,7 @@ abstract class Reflower
     // Convert escaped hex characters into ascii characters (e.g. \A => newline)
     $string = preg_replace_callback("/\\\\([0-9a-fA-F]{0,6})/",
                                     create_function('$matches',
-                                                    'return unichr(hexdec($matches[1]));'),
+                                                    'return UniChr::execute(hexdec($matches[1]));'),
                                     $string);
     return $string;
   }

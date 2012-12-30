@@ -7,6 +7,7 @@ use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Decorator as FrameDecorator;
 use DOMPDF\Image\Decorator as ImageDecorator;
 use DOMPDF\BulletList\Decorator as BulletListDecorator;
+use DOMPDF\Gd\ImageSize;
 
 /**
  * @package dompdf
@@ -57,7 +58,7 @@ class Decorator extends FrameDecorator
     $frame->get_node()->setAttribute("src", $url);
     $this->_img = new ImageDecorator($frame, $dompdf);
     parent::__construct($this->_img, $dompdf);
-    list($width, $height) = dompdf_getimagesize($this->_img->get_image_url());
+    list($width, $height) = ImageSize::execute($this->_img->get_image_url());
 
     // Resample the bullet image to be consistent with 'auto' sized images
     // See also Image_Frame_Reflower::get_min_max_width

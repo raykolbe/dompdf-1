@@ -6,7 +6,7 @@ use DOMPDF\DOMPDF;
 use DOMPDF\Canvas\Canvas;
 use DOMPDF\Canvas\Adapter\CPDF;
 use DOMPDF\Image\Cache as ImageCache;
-
+use DOMPDF\Color\Converter as ColorConverter;
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -211,7 +211,7 @@ class GD implements Canvas
   private function _allocate_color($color) {
     
     if ( isset($color["c"]) ) {
-      $color = cmyk_to_rgb($color);
+      $color = ColorConverter::cmykToRgb($color);
     }
     
     // Full opacity if no alpha set

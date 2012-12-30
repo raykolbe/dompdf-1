@@ -10,6 +10,7 @@ use DOMPDF\Canvas\Adapter\CPDF as CPDFAdapter;
 use DOMPDF\BulletList\Renderer as BulletListRenderer;
 use DOMPDF\Image\Cache as ImageCache;
 use DOMPDF\Exception;
+use DOMPDF\Url\Url;
 
 use \HTML5_Tokenizer as Html5Tokenizer;
 use \HTML5_TreeBuilder as Html5TreeBuilder;
@@ -276,14 +277,7 @@ class DOMPDF
 
     $this->restore_locale();
   }
-
-  /**
-   * Class destructor
-   */
-  function __destruct() {
-    clear_object($this);
-  }
-
+  
   /**
    * Get the dompdf option value
    *
@@ -488,7 +482,7 @@ class DOMPDF
     // browser if the html is ugly and the dom extension complains,
     // preventing the pdf from being streamed.)
     if ( !$this->_protocol && !$this->_base_host && !$this->_base_path ) {
-      list($this->_protocol, $this->_base_host, $this->_base_path) = explode_url($file);
+      list($this->_protocol, $this->_base_host, $this->_base_path) = Url::explode($file);
     }
 
     if ( !$this->get_option("enable_remote") && ($this->_protocol != "" && $this->_protocol !== "file://" ) ) {
@@ -611,9 +605,6 @@ class DOMPDF
       $str = preg_replace($re, '<meta $1$3>', $str);
     }
 
-    // Store parsing warnings as messages
-    set_error_handler("record_warnings");
-
     // @todo Take the quirksmode into account
     // http://hsivonen.iki.fi/doctype/
     // https://developer.mozilla.org/en/mozilla's_quirks_mode
@@ -703,7 +694,7 @@ class DOMPDF
     // <base href="" />
     $base_nodes = $this->_xml->getElementsByTagName("base");
     if ( $base_nodes->length && ($href = $base_nodes->item(0)->getAttribute("href")) ) {
-      list($this->_protocol, $this->_base_host, $this->_base_path) = explode_url($href);
+      list($this->_protocol, $this->_base_host, $this->_base_path) = Url::explode($href);
     }
 
     // Set the base path of the Stylesheet to that of the file being processed
@@ -741,7 +732,7 @@ class DOMPDF
             }
 
             $url = $tag->getAttribute("href");
-            $url = build_url($this->_protocol, $this->_base_host, $this->_base_path, $url);
+            $url = Url::build($this->_protocol, $this->_base_host, $this->_base_path, $url);
 
             $this->_css->load_css_file($url, Stylesheet::ORIG_AUTHOR);
           }
@@ -862,8 +853,6 @@ class DOMPDF
       $this->_start_time = microtime(true);
       ob_start();
     }
-
-    //enable_mem_profile();
 
     $this->_process_html();
 
@@ -991,7 +980,7 @@ class DOMPDF
     }
 
     $frames = Frame::$ID_COUNTER;
-    $memory = DOMPDF_memory_usage() / 1024;
+    $memory = memory_get_peak_usage(true) / 1024;
     $time = (microtime(true) - $this->_start_time) * 1000;
 
     $out = sprintf(

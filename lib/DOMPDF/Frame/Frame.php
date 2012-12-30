@@ -163,14 +163,6 @@ class Frame
   const WS_SPACE = 2;
 
   /**
-   * Class destructor
-   */
-    public function __destruct()
-    {
-        clear_object($this);
-    }
-
-  /**
    * Class constructor
    *
    * @param DOMNode $node the DOMNode this frame represents
@@ -927,93 +919,5 @@ class Frame
     $child->_prev_sibling = null;
     $child->_parent = null;
     return $child;
-  }
-
-  //........................................................................
-
-  // Debugging function:
-  function __toString() {
-    // Skip empty text frames
-//     if ( $this->is_text_node() &&
-//          preg_replace("/\s/", "", $this->_node->data) === "" )
-//       return "";
-
-
-    $str = "<b>" . $this->_node->nodeName . ":</b><br/>";
-    //$str .= spl_object_hash($this->_node) . "<br/>";
-    $str .= "Id: " .$this->get_id() . "<br/>";
-    $str .= "Class: " .get_class($this) . "<br/>";
-
-    if ( $this->is_text_node() ) {
-      $tmp = htmlspecialchars($this->_node->nodeValue);
-      $str .= "<pre>'" .  mb_substr($tmp,0,70) .
-        (mb_strlen($tmp) > 70 ? "..." : "") . "'</pre>";
-    }
-    elseif ( $css_class = $this->_node->getAttribute("class") ) {
-      $str .= "CSS class: '$css_class'<br/>";
-    }
-
-    if ( $this->_parent ) {
-      $str .= "\nParent:" . $this->_parent->_node->nodeName .
-        " (" . spl_object_hash($this->_parent->_node) . ") " .
-        "<br/>";
-    }
-
-    if ( $this->_prev_sibling ) {
-      $str .= "Prev: " . $this->_prev_sibling->_node->nodeName .
-        " (" . spl_object_hash($this->_prev_sibling->_node) . ") " .
-        "<br/>";
-    }
-
-    if ( $this->_next_sibling ) {
-      $str .= "Next: " . $this->_next_sibling->_node->nodeName .
-        " (" . spl_object_hash($this->_next_sibling->_node) . ") " .
-        "<br/>";
-    }
-
-    $d = $this->get_decorator();
-    while ($d && $d != $d->get_decorator()) {
-      $str .= "Decorator: " . get_class($d) . "<br/>";
-      $d = $d->get_decorator();
-    }
-
-    $str .= "Position: " . pre_r($this->_position, true);
-    $str .= "\nContaining block: " . pre_r($this->_containing_block, true);
-    $str .= "\nMargin width: " . pre_r($this->get_margin_width(), true);
-    $str .= "\nMargin height: " . pre_r($this->get_margin_height(), true);
-
-    $str .= "\nStyle: <pre>". $this->_style->__toString() . "</pre>";
-
-    if ( $this->_decorator instanceof BlockDecorator ) {
-      $str .= "Lines:<pre>";
-      foreach ($this->_decorator->get_line_boxes() as $line) {
-        foreach ($line->get_frames() as $frame) {
-          if ($frame instanceof Text_Frame_Decorator) {
-            $str .= "\ntext: ";
-            $str .= "'". htmlspecialchars($frame->get_text()) ."'";
-          }
-          else {
-            $str .= "\nBlock: " . $frame->get_node()->nodeName . " (" . spl_object_hash($frame->get_node()) . ")";
-          }
-        }
-
-        $str .=
-          "\ny => " . $line->y . "\n" .
-          "w => " . $line->w . "\n" .
-          "h => " . $line->h . "\n" .
-          "left => " . $line->left . "\n" .
-          "right => " . $line->right . "\n";
-      }
-      $str .= "</pre>";
-    }
-    
-    $str .= "\n";
-    if ( php_sapi_name() === "cli" ) {
-      $str = strip_tags(str_replace(array("<br/>","<b>","</b>"),
-                                    array("\n","",""),
-                                    $str));
-    }
-
-    return $str;
   }
 }

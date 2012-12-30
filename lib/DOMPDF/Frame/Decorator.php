@@ -9,6 +9,8 @@ use DOMPDF\Frame\Factory as FrameFactory;
 use DOMPDF\Frame\Decorator as FrameDecorator;
 use DOMPDF\Frame\Reflower as FrameReflower;
 use DOMPDF\Frame\FrameTreeList;
+use DOMPDF\Number\Dec2Roman;
+use DOMPDF\String\UniChr;
 
 use \DOMNode;
 
@@ -671,7 +673,7 @@ abstract class Decorator extends Frame
         return dec2roman($value);
   
       case "upper-roman":
-        return mb_strtoupper(dec2roman($value));
+        return mb_strtoupper(Dec2Roman::convert($value));
   
       case "lower-latin":
       case "lower-alpha":
@@ -682,10 +684,10 @@ abstract class Decorator extends Frame
         return chr( ($value % 26) + ord('A') - 1);
   
       case "lower-greek":
-        return unichr($value + 944);
+        return UniChr::execute($value + 944);
   
       case "upper-greek":
-        return unichr($value + 912);
+        return UniChr::execute($value + 912);
     }
   }
 

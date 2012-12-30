@@ -165,7 +165,6 @@ class Renderer extends AbstractRenderer
       $this->$method($x, $y + $h, $w, $bp["bottom"]["color"], $widths, "bottom");
     }
 
-    //    pre_var_dump(get_class($frame->get_next_sibling()));
     //    $last_row = get_class($frame->get_next_sibling()) !== 'Inline_Frame_Decorator';
     // Draw the right border if this is the last row
     if ( $bp["right"]["style"] !== "none" && $bp["right"]["color"] !== "transparent" && $widths[1] > 0 ) {

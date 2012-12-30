@@ -6,6 +6,9 @@ use DOMPDF\Renderer\AbstractRenderer;
 use DOMPDF\Image\Cache as ImageCache;
 use DOMPDF\BulletList\Decorator as BulletListDecorator;
 use DOMPDF\Font\Metrics as FontMetrics;
+use DOMPDF\Number\Dec2Roman;
+use DOMPDF\Gd\ImageSize;
+use DOMPDF\String\UniChr;
 
 /**
  * @package dompdf
@@ -59,7 +62,7 @@ class Renderer extends AbstractRenderer
       
       case "lower-greek":
         for($i = 0; $i < 24; $i++) {
-          $text .= unichr($i+944);
+          $text .= UniChr::execute($i+944);
         }
         break;
     }
@@ -108,11 +111,11 @@ class Renderer extends AbstractRenderer
         $uppercase = true;
       case "lower-roman":
       case "i":
-        $text = dec2roman($n);
+        $text = Dec2Roman::convert($n);
         break;
       
       case "lower-greek":
-        $text = unichr($n + 944);
+        $text = UniChr::execute($n + 944);
         break;
     }
     
@@ -143,7 +146,7 @@ class Renderer extends AbstractRenderer
       // Tested php ver: value measured in px, suffix "px" not in value: rtrim unnecessary.
       //$w = $frame->get_width();
       //$h = $frame->get_height();
-      list($width, $height) = dompdf_getimagesize($img);
+      list($width, $height) = ImageSize::execute($img);
       $dpi = $this->_dompdf->get_option("dpi");
       $w = ((float)rtrim($width, "px") * 72) / $dpi;
       $h = ((float)rtrim($height, "px") * 72) / $dpi;

@@ -7,6 +7,7 @@ use DOMPDF\Canvas\Canvas;
 use DOMPDF\Image\Cache as ImageCache;
 use DOMPDF\Renderer\PHPEvaluator;
 use DOMPDF\Exception;
+use DOMPDF\Gd\ImageSize;
 
 /**
  * @package dompdf
@@ -506,7 +507,6 @@ class CPDF implements Canvas
       throw new Exception("Function $func_name() not found.  Cannot convert $image_type image: $image_url.  Please install the image PHP extension.");
     }
 
-    set_error_handler("record_warnings");
     $im = $func_name($image_url);
 
     if ( $im ) {
@@ -605,7 +605,7 @@ class CPDF implements Canvas
   }
 
   function image($img, $x, $y, $w, $h, $resolution = "normal") {
-    list($width, $height, $type) = dompdf_getimagesize($img);
+    list($width, $height, $type) = ImageSize::execute($img);
     
     $debug_png = $this->_dompdf->get_option("debug_png");
 

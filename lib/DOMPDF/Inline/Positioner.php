@@ -32,15 +32,7 @@ class Positioner extends AbstractPositioner
      * @var Block_Frame_Decorator
      */ 
     $p = $this->_frame->find_block_parent();
-
-    // Debugging code:
-
-//     pre_r("\nPositioning:");
-//     pre_r("Me: " . $this->_frame->get_node()->nodeName . " (" . spl_object_hash($this->_frame->get_node()) . ")");
-//     pre_r("Parent: " . $p->get_node()->nodeName . " (" . spl_object_hash($p->get_node()) . ")");
-
-    // End debugging
-
+    
     if ( !$p )
       throw new Exception("No block-level parent found.  Not good.");
 

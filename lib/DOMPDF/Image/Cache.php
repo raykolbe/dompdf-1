@@ -5,6 +5,9 @@ namespace DOMPDF\Image;
 use DOMPDF\DOMPDF;
 use DOMPDF\ImageException;
 use DOMPDF\Image\Cache as ImageCache;
+use DOMPDF\Url\Url;
+use DOMPDF\Uri\Uri;
+use DOMPDF\Gd\ImageSize;
 
 /**
  * @package dompdf
@@ -52,7 +55,7 @@ class Cache
    * @return array             An array with two elements: The local path to the image and the image extension
    */
   static function resolve_url($url, $protocol, $host, $base_path, DOMPDF $dompdf) {
-    $parsed_url = explode_url($url);
+    $parsed_url = Url::explode($url);
     $message = null;
 
     $remote = ($protocol && $protocol !== "file://") || ($parsed_url['protocol'] != "");
@@ -71,7 +74,7 @@ class Cache
       // Remote allowed or DataURI
       else if ( $enable_remote && $remote || $data_uri ) {
         // Download remote files to a temporary directory
-        $full_url = build_url($protocol, $host, $base_path, $url);
+        $full_url = Url::build($protocol, $host, $base_path, $url);
   
         // From cache
         if ( isset(self::$_cache[$full_url]) ) {
@@ -85,14 +88,12 @@ class Cache
           $image = "";
 
           if ($data_uri) {
-            if ($parsed_data_uri = parse_data_uri($url)) {
+            if ($parsed_data_uri = Uri::parseDataUri($url)) {
               $image = $parsed_data_uri['data'];
             }
           }
           else {
-            set_error_handler("record_warnings");
             $image = file_get_contents($full_url);
-            restore_error_handler();
           }
   
           // Image not found or invalid
@@ -115,7 +116,7 @@ class Cache
       
       // Not remote, local image
       else {
-        $resolved_url = build_url($protocol, $host, $base_path, $url);
+        $resolved_url = Url::build($protocol, $host, $base_path, $url);
       }
   
       // Check if the local file is readable
@@ -125,7 +126,7 @@ class Cache
       
       // Check is the file is an image
       else {
-        list($width, $height, $type) = dompdf_getimagesize($resolved_url);
+        list($width, $height, $type) = ImageSize::execute($resolved_url);
         
         // Known image type
         if ( $width && $height && in_array($type, array(IMAGETYPE_GIF, IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_BMP)) ) {
@@ -167,7 +168,7 @@ class Cache
   }
   
   static function detect_type($file) {
-    list(, , $type) = dompdf_getimagesize($file);
+    list(, , $type) = ImageSize::execute($file);
     return $type;
   }
   

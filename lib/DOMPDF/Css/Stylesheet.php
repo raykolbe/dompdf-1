@@ -5,6 +5,8 @@ namespace DOMPDF\Css;
 use DOMPDF\DOMPDF;
 use DOMPDF\Exception;
 use DOMPDF\Css\AttributeTranslator;
+use DOMPDF\Url\Url;
+use DOMPDF\Uri\Uri;
 
 use \DOMXPath;
 
@@ -153,15 +155,8 @@ class Stylesheet
     $this->_dompdf = $dompdf;
     $this->_styles = array();
     $this->_loaded_files = array();
-    list($this->_protocol, $this->_base_host, $this->_base_path) = explode_url($_SERVER["SCRIPT_FILENAME"]);
+    list($this->_protocol, $this->_base_host, $this->_base_path) = Url::explode($_SERVER["SCRIPT_FILENAME"]);
     $this->_page_styles = array("base" => null);
-  }
-  
-  /**
-   * Class destructor
-   */
-  function __destruct() {
-    clear_object($this);
   }
 
   /**
@@ -299,11 +294,11 @@ class Stylesheet
     $this->_loaded_files[$file] = true;
 
     if ( strpos($file, "data:") === 0) {
-      $parsed = parse_data_uri($file);
+      $parsed = Uri::parseDataUri($file);
       $css = $parsed["data"];
     }
     else {
-      $parsed_url = explode_url($file);
+      $parsed_url = Url::explode($file);
   
       list($this->_protocol, $this->_base_host, $this->_base_path, $filename) = $parsed_url;
   
@@ -312,12 +307,10 @@ class Stylesheet
         $file = $this->_base_path . $filename;
       }
       else {
-        $file = build_url($this->_protocol, $this->_base_host, $this->_base_path, $filename);
+        $file = Url::build($this->_protocol, $this->_base_host, $this->_base_path, $filename);
       }
   
-      set_error_handler("record_warnings");
       $css = file_get_contents($file, null, $this->_dompdf->get_http_context());
-      restore_error_handler();
     
       $good_mime_type = true;
       
@@ -332,7 +325,6 @@ class Stylesheet
       }
   
       if ( !$good_mime_type || $css == "" ) {
-        record_warnings(E_USER_WARNING, "Unable to load css file $file", __FILE__, __LINE__);
         return;
       }
     }
@@ -828,7 +820,6 @@ class Stylesheet
       // Retrieve the nodes
       $nodes = @$xp->query($query["query"]);
       if ( $nodes == null ) {
-        record_warnings(E_USER_WARNING, "The CSS selector '$selector' is not valid", __FILE__, __LINE__);
         continue;
       }
       
@@ -862,7 +853,6 @@ class Stylesheet
       // Retrieve the nodes
       $nodes = @$xp->query($query["query"]);
       if ( $nodes == null ) {
-        record_warnings(E_USER_WARNING, "The CSS selector '$selector' is not valid", __FILE__, __LINE__);
         continue;
       }
 
@@ -885,7 +875,6 @@ class Stylesheet
     // iterate over the tree using an implicit Frame_Tree iterator.)
     $root_flg = false;
     foreach ($tree->get_frames() as $frame) {
-      // pre_r($frame->get_node()->nodeName . ":");
       if ( !$root_flg && $this->_page_styles["base"] ) {
         $style = $this->_page_styles["base"];
         $root_flg = true;
@@ -980,12 +969,7 @@ class Stylesheet
         print "]\n";
         print "/$debug_nodename]\n</pre>";
       }
-
-      /*DEBUGCSS print: see below different print debugging method
-      pre_r($frame->get_node()->nodeName . ":");
-      echo "<pre>";
-      echo $style;
-      echo "</pre>";*/
+      
       $frame->set_style($style);
 
     }
@@ -1050,7 +1034,6 @@ class Stylesheet
     // [6] => '{', within media rules
     // [7] => individual rules, outside of media rules
     //
-    //pre_r($matches);
     foreach ( $matches as $match ) {
       $match[2] = trim($match[2]);
 
@@ -1152,7 +1135,7 @@ class Stylesheet
       $val = preg_replace("/url\(['\"]?([^'\")]+)['\"]?\)/","\\1", trim($val));
 
       // Resolve the url now in the context of the current stylesheet
-      $parsed_url = explode_url($val);
+      $parsed_url = Url::explode($val);
       if ( $parsed_url["protocol"] == "" && $this->get_protocol() == "" ) {
         if ($parsed_url["path"][0] === '/' || $parsed_url["path"][0] === '\\' ) {
           $path = $_SERVER["DOCUMENT_ROOT"].'/';
@@ -1168,7 +1151,7 @@ class Stylesheet
         if (!$path) { $path = 'none'; }
       }
       else {
-        $path = build_url($this->get_protocol(),
+        $path = Url::build($this->get_protocol(),
                           $this->get_host(),
                           $this->get_base_path(),
                           $val);
@@ -1221,7 +1204,7 @@ class Stylesheet
       
       // $url = str_replace(array('"',"url", "(", ")"), "", $url);
       // If the protocol is php, assume that we will import using file://
-      // $url = build_url($protocol == "php://" ? "file://" : $protocol, $host, $path, $url);
+      // $url = Url::build($protocol == "php://" ? "file://" : $protocol, $host, $path, $url);
       // Above does not work for subfolders and absolute urls.
       // Todo: As above, do we need to replace php or file to an empty protocol for local files?
       
@@ -1257,7 +1240,7 @@ class Stylesheet
         "local"  => strtolower($src[1][$i]) === "local",
         "uri"    => $src[2][$i],
         "format" => $src[4][$i],
-        "path"   => build_url($this->_protocol, $this->_base_host, $this->_base_path, $src[2][$i]),
+        "path"   => Url::build($this->_protocol, $this->_base_host, $this->_base_path, $src[2][$i]),
       );
       
       if ( !$source["local"] && in_array($source["format"], array("", "woff", "opentype", "truetype")) ) {

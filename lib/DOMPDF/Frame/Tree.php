@@ -78,10 +78,6 @@ class Tree
     $this->_registry = array();
   }
   
-  function __destruct() {
-    clear_object($this);
-  }
-
   /**
    * Returns the DomDocument object representing the curent html document
    *
