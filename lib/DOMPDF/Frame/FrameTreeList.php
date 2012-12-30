@@ -13,15 +13,21 @@ use DOMPDF\Frame\FrameTreeIterator;
  */
 class FrameTreeList implements \IteratorAggregate
 {
-  /**
-   * @var Frame
-   */
-  protected $_root;
+    /**
+     * @var Frame
+     */
+    protected $_root;
 
-  function __construct(Frame $root) { $this->_root = $root; }
+    public function __construct(Frame $root)
+    {
+        $this->_root = $root;
+    }
 
-  /**
-   * @return FrameTreeIterator
-   */
-  function getIterator() { return new FrameTreeIterator($this->_root); }
+    /**
+     * @return FrameTreeIterator
+     */
+    public function getIterator()
+    {
+        return new FrameTreeIterator($this->_root);
+    }
 }

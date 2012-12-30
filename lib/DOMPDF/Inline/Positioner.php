@@ -20,51 +20,52 @@ use DOMPDF\Exception;
  * @access private
  * @package dompdf
  */
-class Positioner extends AbstractPositioner
+class Positioner extends AbstractPositioner 
 {
-  function __construct(FrameDecorator $frame) { parent::__construct($frame); }
-
-  //........................................................................
-
-  function position() {
-    /**
-     * Find our nearest block level parent and access its lines property.
-     * @var Block_Frame_Decorator
-     */ 
-    $p = $this->_frame->find_block_parent();
-    
-    if ( !$p )
-      throw new Exception("No block-level parent found.  Not good.");
-
-    $f = $this->_frame;
-    
-    $cb = $f->get_containing_block();
-    $line = $p->get_current_line_box();
-
-    // Skip the page break if in a fixed position element
-    $is_fixed = false;
-    while($f = $f->get_parent()) {
-      if($f->get_style()->position === "fixed") {
-        $is_fixed = true;
-        break;
-      }
-    }
-
-    $f = $this->_frame;
-
-    if ( !$is_fixed && $f->get_parent() &&
-         $f->get_parent() instanceof InlineDecorator &&
-         $f->is_text_node() ) {
-      
-      $min_max = $f->get_reflower()->get_min_max_width();
-      
-      // If the frame doesn't fit in the current line, a line break occurs
-      if ( $min_max["min"] > ($cb["w"] - $line->left - $line->w - $line->right) ) {
-        $p->add_line();
-      }
+    public function __construct(FrameDecorator $frame)
+    {
+        parent::__construct($frame);
     }
     
-    $f->set_position($cb["x"] + $line->w, $line->y);
+    public function position()
+    {
+        /**
+         * Find our nearest block level parent and access its lines property.
+         * @var Block_Frame_Decorator
+         */
+        $p = $this->_frame->find_block_parent();
 
-  }
+        if (!$p)
+            throw new Exception("No block-level parent found.  Not good.");
+
+        $f = $this->_frame;
+
+        $cb = $f->get_containing_block();
+        $line = $p->get_current_line_box();
+
+        // Skip the page break if in a fixed position element
+        $is_fixed = false;
+        while ($f = $f->get_parent()) {
+            if ($f->get_style()->position === "fixed") {
+                $is_fixed = true;
+                break;
+            }
+        }
+
+        $f = $this->_frame;
+
+        if (!$is_fixed && $f->get_parent() &&
+                $f->get_parent() instanceof InlineDecorator &&
+                $f->is_text_node()) {
+
+            $min_max = $f->get_reflower()->get_min_max_width();
+
+            // If the frame doesn't fit in the current line, a line break occurs
+            if ($min_max["min"] > ($cb["w"] - $line->left - $line->w - $line->right)) {
+                $p->add_line();
+            }
+        }
+
+        $f->set_position($cb["x"] + $line->w, $line->y);
+    }
 }

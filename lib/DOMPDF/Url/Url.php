@@ -2,7 +2,7 @@
 
 namespace DOMPDF\Url;
 
-class Url
+class Url 
 {
     public static function build($protocol, $host, $base_path, $url)
     {

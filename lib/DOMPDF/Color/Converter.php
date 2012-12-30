@@ -14,7 +14,8 @@ class Converter
      *
      * @return float[]
      */
-    public static function cmykToRgb($c, $m = null, $y = null, $k = null) {
+    public static function cmykToRgb($c, $m = null, $y = null, $k = null)
+    {
         if (is_array($c)) {
             list($c, $m, $y, $k) = $c;
         }

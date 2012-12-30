@@ -2,7 +2,7 @@
 
 namespace DOMPDF\String;
 
-class UniChr
+class UniChr 
 {
     public static function execute($c)
     {

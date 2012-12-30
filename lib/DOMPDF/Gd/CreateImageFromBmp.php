@@ -4,7 +4,8 @@ namespace DOMPDF\Gd;
 
 class CreateImageFromBmp
 {
-    public static function create($filename) {
+    public static function create($filename)
+    {
         // version 1.00
         if (!($fh = fopen($filename, 'rb'))) {
             trigger_error('imagecreatefrombmp: Can not open ' . $filename, E_USER_WARNING);

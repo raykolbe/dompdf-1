@@ -19,10 +19,15 @@ use DOMPDF\Block\Decorator as BlockDecorator;
  * @access private
  * @package dompdf
  */
-class Reflower extends FrameReflower
+class Reflower extends FrameReflower 
 {
-  function __construct(Frame $frame) { parent::__construct($frame); }
+    public function __construct(Frame $frame)
+    {
+        parent::__construct($frame);
+    }
 
-  function reflow(BlockDecorator $block = null) { return; }
-  
+    public function reflow(BlockDecorator $block = null)
+    {
+        return;
+    }
 }

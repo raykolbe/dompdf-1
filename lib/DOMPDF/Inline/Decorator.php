@@ -21,62 +21,64 @@ use DOMPDF\Exception;
  * @access private
  * @package dompdf
  */
-class Decorator extends FrameDecorator
-{  
-  function __construct(Frame $frame, DOMPDF $dompdf) { parent::__construct($frame, $dompdf); }
-
-  function split(Frame $frame = null, $force_pagebreak = false) {
-
-    if ( is_null($frame) ) {
-      $this->get_parent()->split($this, $force_pagebreak);
-      return;
+class Decorator extends FrameDecorator 
+{
+    public function __construct(Frame $frame, DOMPDF $dompdf)
+    {
+        parent::__construct($frame, $dompdf);
     }
 
-    if ( $frame->get_parent() !== $this )
-      throw new Exception("Unable to split: frame is not a child of this one.");
-        
-    $split = $this->copy( $this->_frame->get_node()->cloneNode() ); 
-    $this->get_parent()->insert_child_after($split, $this);
+    public function split(Frame $frame = null, $force_pagebreak = false)
+    {
+        if (is_null($frame)) {
+            $this->get_parent()->split($this, $force_pagebreak);
+            return;
+        }
 
-    // Unset the current node's right style properties
-    $style = $this->_frame->get_style();
-    $style->margin_right = 0;
-    $style->padding_right = 0;
-    $style->border_right_width = 0;
+        if ($frame->get_parent() !== $this)
+            throw new Exception("Unable to split: frame is not a child of this one.");
 
-    // Unset the split node's left style properties since we don't want them
-    // to propagate
-    $style = $split->get_style();
-    $style->margin_left = 0;
-    $style->padding_left = 0;
-    $style->border_left_width = 0;
+        $split = $this->copy($this->_frame->get_node()->cloneNode());
+        $this->get_parent()->insert_child_after($split, $this);
 
-    //On continuation of inline element on next line,
-    //don't repeat non-vertically repeatble background images
-    //See e.g. in testcase image_variants, long desriptions
-    if ( ($url = $style->background_image) && $url !== "none"
-         && ($repeat = $style->background_repeat) && $repeat !== "repeat" &&  $repeat !== "repeat-y"
-       ) {
-      $style->background_image = "none";
-    }           
+        // Unset the current node's right style properties
+        $style = $this->_frame->get_style();
+        $style->margin_right = 0;
+        $style->padding_right = 0;
+        $style->border_right_width = 0;
 
-    // Add $frame and all following siblings to the new split node
-    $iter = $frame;
-    while ($iter) {
-      $frame = $iter;      
-      $iter = $iter->get_next_sibling();
-      $frame->reset();
-      $split->append_child($frame);
+        // Unset the split node's left style properties since we don't want them
+        // to propagate
+        $style = $split->get_style();
+        $style->margin_left = 0;
+        $style->padding_left = 0;
+        $style->border_left_width = 0;
+
+        //On continuation of inline element on next line,
+        //don't repeat non-vertically repeatble background images
+        //See e.g. in testcase image_variants, long desriptions
+        if (($url = $style->background_image) && $url !== "none"
+                && ($repeat = $style->background_repeat) && $repeat !== "repeat" && $repeat !== "repeat-y"
+        ) {
+            $style->background_image = "none";
+        }
+
+        // Add $frame and all following siblings to the new split node
+        $iter = $frame;
+        while ($iter) {
+            $frame = $iter;
+            $iter = $iter->get_next_sibling();
+            $frame->reset();
+            $split->append_child($frame);
+        }
+
+        $page_breaks = array("always", "left", "right");
+        $frame_style = $frame->get_style();
+        if ($force_pagebreak ||
+                in_array($frame_style->page_break_before, $page_breaks) ||
+                in_array($frame_style->page_break_after, $page_breaks)) {
+
+            $this->get_parent()->split($split, true);
+        }
     }
-    
-    $page_breaks = array("always", "left", "right");
-    $frame_style = $frame->get_style();
-    if( $force_pagebreak ||
-      in_array($frame_style->page_break_before, $page_breaks) ||
-      in_array($frame_style->page_break_after, $page_breaks) ) {
-
-      $this->get_parent()->split($split, true);
-    }
-  }
-  
-} 
+}

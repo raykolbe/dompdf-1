@@ -19,32 +19,30 @@ use DOMPDF\Frame\Decorator as FrameDecorator;
  * @access private
  * @package dompdf
  */
-abstract class AbstractPositioner
+abstract class AbstractPositioner 
 {
-  /**
-   * @var Frame_Decorator
-   */
-  protected $_frame;
-  
-  //........................................................................
+    /**
+     * @var Frame_Decorator
+     */
+    protected $_frame;
 
-  function __construct(FrameDecorator $frame) {
-    $this->_frame = $frame;
-  }
-  
-  //........................................................................
-
-  abstract function position();
-  
-  function move($offset_x, $offset_y, $ignore_self = false) {
-    list($x, $y) = $this->_frame->get_position();
-    
-    if ( !$ignore_self ) {
-      $this->_frame->set_position($x + $offset_x, $y + $offset_y);
+    public function __construct(FrameDecorator $frame)
+    {
+        $this->_frame = $frame;
     }
     
-    foreach($this->_frame->get_children() as $child) {
-      $child->move($offset_x, $offset_y);
+    abstract function position();
+
+    public function move($offset_x, $offset_y, $ignore_self = false)
+    {
+        list($x, $y) = $this->_frame->get_position();
+
+        if (!$ignore_self) {
+            $this->_frame->set_position($x + $offset_x, $y + $offset_y);
+        }
+
+        foreach ($this->_frame->get_children() as $child) {
+            $child->move($offset_x, $offset_y);
+        }
     }
-  }
 }

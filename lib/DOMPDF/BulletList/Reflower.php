@@ -21,20 +21,21 @@ use DOMPDF\Block\Decorator as BlockDecorator;
  */
 class Reflower extends FrameReflower
 {
-  function __construct(FrameDecorator $frame) { parent::__construct($frame); }
-    
-  //........................................................................
-
-  function reflow(BlockDecorator $block = null) {
-    $style = $this->_frame->get_style();
-
-    $style->width = $this->_frame->get_width();
-    $this->_frame->position();
-
-    if ( $style->list_style_position === "inside" ) {
-      $p = $this->_frame->find_block_parent();
-      $p->add_frame_to_line($this->_frame);
+    public function __construct(FrameDecorator $frame)
+    {
+        parent::__construct($frame);
     }
+    
+    public function reflow(BlockDecorator $block = null)
+    {
+        $style = $this->_frame->get_style();
 
-  }
+        $style->width = $this->_frame->get_width();
+        $this->_frame->position();
+
+        if ($style->list_style_position === "inside") {
+            $p = $this->_frame->find_block_parent();
+            $p->add_frame_to_line($this->_frame);
+        }
+    }
 }

@@ -2,7 +2,7 @@
 
 namespace DOMPDF\Uri;
 
-class Uri
+class Uri 
 {
     /**
      * Parses a data URI scheme
@@ -12,7 +12,8 @@ class Uri
      *
      * @return array The result with charset, mime type and decoded data
      */
-    public static function parseDataUri($data_uri) {
+    public static function parseDataUri($data_uri)
+    {
         if (!preg_match('/^data:(?P<mime>[a-z0-9\/+-.]+)(;charset=(?P<charset>[a-z0-9-])+)?(?P<base64>;base64)?\,(?P<data>.*)?/i', $data_uri, $match)) {
             return false;
         }

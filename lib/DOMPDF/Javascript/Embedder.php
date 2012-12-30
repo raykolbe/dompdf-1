@@ -18,26 +18,29 @@ use DOMPDF\Frame\Frame;
  * @access private
  * @package dompdf
  */
-class Embedder
-{  
-  /**
-   * @var DOMPDF
-   */
-  protected $_dompdf;
+class Embedder 
+{
+    /**
+     * @var DOMPDF
+     */
+    protected $_dompdf;
 
-  function __construct(DOMPDF $dompdf) {
-    $this->_dompdf = $dompdf;
-  }
-
-  function insert($script) {
-    $this->_dompdf->get_canvas()->javascript($script);
-  }
-
-  function render(Frame $frame) {
-    if ( !$this->_dompdf->get_option("enable_javascript") ) {
-      return;
+    public function __construct(DOMPDF $dompdf)
+    {
+        $this->_dompdf = $dompdf;
     }
-      
-    $this->insert($frame->get_node()->nodeValue);
-  }
+
+    public function insert($script)
+    {
+        $this->_dompdf->get_canvas()->javascript($script);
+    }
+
+    public function render(Frame $frame)
+    {
+        if (!$this->_dompdf->get_option("enable_javascript")) {
+            return;
+        }
+
+        $this->insert($frame->get_node()->nodeValue);
+    }
 }

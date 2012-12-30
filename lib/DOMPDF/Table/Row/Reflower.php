@@ -21,49 +21,46 @@ use DOMPDF\Exception;
  * @access private
  * @package dompdf
  */
-class Reflower extends FrameReflower
+class Reflower extends FrameReflower 
 {
-  function __construct(RowDecorator $frame) {
-    parent::__construct($frame);
-  }
-
-  //........................................................................
-
-  function reflow(BlockDecorator $block = null) {
-    $page = $this->_frame->get_root();
-
-    if ( $page->is_full() )
-      return;
-
-    $this->_frame->position();
-    $style = $this->_frame->get_style();
-    $cb = $this->_frame->get_containing_block();
-
-    foreach ($this->_frame->get_children() as $child) {
-
-      if ( $page->is_full() )
-        return;
-
-      $child->set_containing_block($cb);
-      $child->reflow();
-
+    public function __construct(RowDecorator $frame)
+    {
+        parent::__construct($frame);
     }
+    
+    public function reflow(BlockDecorator $block = null)
+    {
+        $page = $this->_frame->get_root();
 
-    if ( $page->is_full() )
-      return;
+        if ($page->is_full())
+            return;
 
-    $table = TableDecorator::find_parent_table($this->_frame);
-    $cellmap = $table->get_cellmap();
-    $style->width = $cellmap->get_frame_width($this->_frame);
-    $style->height = $cellmap->get_frame_height($this->_frame);
+        $this->_frame->position();
+        $style = $this->_frame->get_style();
+        $cb = $this->_frame->get_containing_block();
 
-    $this->_frame->set_position($cellmap->get_frame_position($this->_frame));
+        foreach ($this->_frame->get_children() as $child) {
 
-  }
+            if ($page->is_full())
+                return;
 
-  //........................................................................
+            $child->set_containing_block($cb);
+            $child->reflow();
+        }
 
-  function get_min_max_width() {
-    throw new Exception("Min/max width is undefined for table rows");
-  }
+        if ($page->is_full())
+            return;
+
+        $table = TableDecorator::find_parent_table($this->_frame);
+        $cellmap = $table->get_cellmap();
+        $style->width = $cellmap->get_frame_width($this->_frame);
+        $style->height = $cellmap->get_frame_height($this->_frame);
+
+        $this->_frame->set_position($cellmap->get_frame_position($this->_frame));
+    }
+    
+    public function get_min_max_width()
+    {
+        throw new Exception("Min/max width is undefined for table rows");
+    }
 }

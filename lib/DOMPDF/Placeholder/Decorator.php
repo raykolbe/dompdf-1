@@ -19,15 +19,15 @@ use DOMPDF\Frame\Decorator as FrameDecorator;
  * @access private
  * @package dompdf
  */
-class Decorator extends FrameDecorator
+class Decorator extends FrameDecorator 
 {
-  function __construct(Frame $frame, DOMPDF $dompdf) {
-    parent::__construct($frame, $dompdf);
-    $style = $this->_frame->get_style();
-    $style->width = 0;
-    $style->height = 0;
-    $style->margin = 0;
-    $style->padding = 0;
-  }
-
+    public function __construct(Frame $frame, DOMPDF $dompdf)
+    {
+        parent::__construct($frame, $dompdf);
+        $style = $this->_frame->get_style();
+        $style->width = 0;
+        $style->height = 0;
+        $style->margin = 0;
+        $style->padding = 0;
+    }
 }

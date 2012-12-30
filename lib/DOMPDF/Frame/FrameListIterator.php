@@ -15,58 +15,67 @@ use DOMPDF\Frame\Frame;
  */
 class FrameListIterator implements \Iterator
 {
-  /**
-   * @var Frame
-   */
-  protected $_parent;
+    /**
+     * @var Frame
+     */
+    protected $_parent;
 
-  /**
-   * @var Frame
-   */
-  protected $_cur;
+    /**
+     * @var Frame
+     */
+    protected $_cur;
 
-  /**
-   * @var int
-   */
-  protected $_num;
+    /**
+     * @var int
+     */
+    protected $_num;
 
-  function __construct(Frame $frame) {
-    $this->_parent = $frame;
-    $this->_cur = $frame->get_first_child();
-    $this->_num = 0;
-  }
-
-  function rewind() {
-    $this->_cur = $this->_parent->get_first_child();
-    $this->_num = 0;
-  }
-
-  /**
-   * @return bool
-   */
-  function valid() {
-    return isset($this->_cur);// && ($this->_cur->get_prev_sibling() === $this->_prev);
-  }
-
-  function key() { return $this->_num; }
-
-  /**
-   * @return Frame
-   */
-  function current() { return $this->_cur; }
-
-  /**
-   * @return Frame
-   */
-  function next() {
-
-    $ret = $this->_cur;
-    if ( !$ret ) {
-      return null;
+    public function __construct(Frame $frame)
+    {
+        $this->_parent = $frame;
+        $this->_cur = $frame->get_first_child();
+        $this->_num = 0;
     }
 
-    $this->_cur = $this->_cur->get_next_sibling();
-    $this->_num++;
-    return $ret;
-  }
+    public function rewind()
+    {
+        $this->_cur = $this->_parent->get_first_child();
+        $this->_num = 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function valid()
+    {
+        return isset($this->_cur); // && ($this->_cur->get_prev_sibling() === $this->_prev);
+    }
+
+    public function key()
+    {
+        return $this->_num;
+    }
+
+    /**
+     * @return Frame
+     */
+    public function current()
+    {
+        return $this->_cur;
+    }
+
+    /**
+     * @return Frame
+     */
+    public function next()
+    {
+        $ret = $this->_cur;
+        if (!$ret) {
+            return null;
+        }
+
+        $this->_cur = $this->_cur->get_next_sibling();
+        $this->_num++;
+        return $ret;
+    }
 }

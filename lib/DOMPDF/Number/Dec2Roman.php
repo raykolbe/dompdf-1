@@ -4,7 +4,7 @@ namespace DOMPDF\Number;
 
 use DOMPDF\Exception;
 
-class Dec2Roman
+class Dec2Roman 
 {
     public static function convert($num)
     {
@@ -34,5 +34,4 @@ class Dec2Roman
 
         return $ret;
     }
-
 }

@@ -5,7 +5,7 @@ namespace DOMPDF\Stdlib;
 /**
  * @TODO Implement
  */
-abstract class AbstractOptions
+abstract class AbstractOptions 
 {
     
 }

@@ -19,17 +19,17 @@ use DOMPDF\Table\Decorator as TableDecorator;
  * @access private
  * @package dompdf
  */
-class Positioner extends AbstractPositioner
+class Positioner extends AbstractPositioner 
 {
-  function __construct(FrameDecorator $frame) { parent::__construct($frame); }
-  
-  //........................................................................
-
-  function position() {
-
-    $table = TableDecorator::find_parent_table($this->_frame);
-    $cellmap = $table->get_cellmap();
-    $this->_frame->set_position($cellmap->get_frame_position($this->_frame));
-
-  }
+    public function __construct(FrameDecorator $frame)
+    {
+        parent::__construct($frame);
+    }
+    
+    public function position()
+    {
+        $table = TableDecorator::find_parent_table($this->_frame);
+        $cellmap = $table->get_cellmap();
+        $this->_frame->set_position($cellmap->get_frame_position($this->_frame));
+    }
 }

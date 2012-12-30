@@ -21,53 +21,52 @@ use DOMPDF\Frame\Decorator as FrameDecorator;
  * @access private
  * @package dompdf
  */
-class Decorator extends FrameDecorator
+class Decorator extends FrameDecorator 
 {
-  /**
-   * Class constructor
-   *
-   * @param Frame $frame   Frame to decorate
-   * @param DOMPDF $dompdf Current dompdf instance
-   */
-  function __construct(Frame $frame, DOMPDF $dompdf) {
-    parent::__construct($frame, $dompdf);
-  }
-
-  /**
-   * Override split() to remove all child rows and this element from the cellmap
-   *
-   * @param Frame $child
-   * @param bool  $force_pagebreak
-   *
-   * @return void
-   */
-  function split(Frame $child = null, $force_pagebreak = false) {
-
-    if ( is_null($child) ) {
-      parent::split();
-      return;
+    /**
+     * Class constructor
+     *
+     * @param Frame $frame   Frame to decorate
+     * @param DOMPDF $dompdf Current dompdf instance
+     */
+    public function __construct(Frame $frame, DOMPDF $dompdf)
+    {
+        parent::__construct($frame, $dompdf);
     }
 
-    // Remove child & all subsequent rows from the cellmap
-    $cellmap = $this->get_parent()->get_cellmap();
-    $iter = $child;
+    /**
+     * Override split() to remove all child rows and this element from the cellmap
+     *
+     * @param Frame $child
+     * @param bool  $force_pagebreak
+     *
+     * @return void
+     */
+    public function split(Frame $child = null, $force_pagebreak = false)
+    {
+        if (is_null($child)) {
+            parent::split();
+            return;
+        }
 
-    while ( $iter ) {
-      $cellmap->remove_row($iter);
-      $iter = $iter->get_next_sibling();
-    }
+        // Remove child & all subsequent rows from the cellmap
+        $cellmap = $this->get_parent()->get_cellmap();
+        $iter = $child;
 
-    // If we are splitting at the first child remove the
-    // table-row-group from the cellmap as well
-    if ( $child === $this->get_first_child() ) {
-      $cellmap->remove_row_group($this);
-      parent::split();
-      return;
+        while ($iter) {
+            $cellmap->remove_row($iter);
+            $iter = $iter->get_next_sibling();
+        }
+
+        // If we are splitting at the first child remove the
+        // table-row-group from the cellmap as well
+        if ($child === $this->get_first_child()) {
+            $cellmap->remove_row_group($this);
+            parent::split();
+            return;
+        }
+
+        $cellmap->update_row_group($this, $child->get_prev_sibling());
+        parent::split($child);
     }
-    
-    $cellmap->update_row_group($this, $child->get_prev_sibling());
-    parent::split($child);
-    
-  }
 }
- 

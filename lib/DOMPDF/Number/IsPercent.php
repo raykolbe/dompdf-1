@@ -2,9 +2,10 @@
 
 namespace DOMPDF\Number;
 
-class IsPercent
+class IsPercent 
 {
-    public static function validate($value) {
+    public static function validate($value)
+    {
         return false !== mb_strpos($value, "%");
     }
 }

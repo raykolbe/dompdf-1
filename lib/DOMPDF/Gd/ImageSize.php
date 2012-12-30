@@ -10,7 +10,8 @@ class ImageSize
      * @param string $filename
      * @return array The same format as getimagesize($filename)
      */
-    public static function execute($filename) {
+    public static function execute($filename)
+    {
         static $cache = array();
 
         if (isset($cache[$filename])) {

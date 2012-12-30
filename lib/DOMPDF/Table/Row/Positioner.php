@@ -18,24 +18,24 @@ use DOMPDF\Frame\Decorator as FrameDecorator;
  * @access private
  * @package dompdf
  */
-class Positioner extends AbstractPositioner
+class Positioner extends AbstractPositioner 
 {
-  function __construct(FrameDecorator $frame) { parent::__construct($frame); }
-  
-  //........................................................................
+    public function __construct(FrameDecorator $frame)
+    {
+        parent::__construct($frame);
+    }
+    
+    public function position()
+    {
+        $cb = $this->_frame->get_containing_block();
+        $p = $this->_frame->get_prev_sibling();
 
-  function position() {
+        if ($p)
+            $y = $p->get_position("y") + $p->get_margin_height();
 
-    $cb = $this->_frame->get_containing_block();    
-    $p = $this->_frame->get_prev_sibling();
+        else
+            $y = $cb["y"];
 
-    if ( $p ) 
-      $y = $p->get_position("y") + $p->get_margin_height();
-
-    else
-      $y = $cb["y"];
-
-    $this->_frame->set_position($cb["x"], $y);
-
-  }
+        $this->_frame->set_position($cb["x"], $y);
+    }
 }

@@ -18,12 +18,15 @@ use DOMPDF\Positioner\AbstractPositioner;
  * @access private
  * @package dompdf
  */
-class Positioner extends AbstractPositioner
+class Positioner extends AbstractPositioner 
 {
-  function __construct(FrameDecorator $frame) {
-    parent::__construct($frame);
-  }
+    public function __construct(FrameDecorator $frame)
+    {
+        parent::__construct($frame);
+    }
 
-  function position() { return; }
-  
+    public function position()
+    {
+        return;
+    }
 }
