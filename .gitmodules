@@ -1,3 +1,6 @@
 [submodule "lib/vendor/php-font-lib"]
 	path = lib/vendor/php-font-lib
 	url = https://github.com/PhenX/php-font-lib.git
+[submodule "lib/vendor/Doctrine/Common"]
+	path = lib/vendor/Doctrine/Common
+	url = https://github.com/doctrine/common.git
