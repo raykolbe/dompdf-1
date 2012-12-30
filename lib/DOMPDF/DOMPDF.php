@@ -234,10 +234,7 @@ class DOMPDF
         "enable_css_float" => DOMPDF_ENABLE_CSS_FLOAT,
         "enable_javascript" => DOMPDF_ENABLE_JAVASCRIPT,
         "enable_html5_parser" => DOMPDF_ENABLE_HTML5PARSER,
-        "enable_font_subsetting" => DOMPDF_ENABLE_FONTSUBSETTING,
-        // Admin
-        "admin_username" => DOMPDF_ADMIN_USERNAME,
-        "admin_password" => DOMPDF_ADMIN_PASSWORD,
+        "enable_font_subsetting" => DOMPDF_ENABLE_FONTSUBSETTING
     );
 
     /**
