@@ -2,6 +2,8 @@
 
 namespace DOMPDF\Css;
 
+use DOMPDF\Frame\Frame;
+
 use \DOMElement;
 use \DOMNode;
 use \DOMXpath;

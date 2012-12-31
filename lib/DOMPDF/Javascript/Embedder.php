@@ -37,7 +37,7 @@ class Embedder
 
     public function render(Frame $frame)
     {
-        if (!$this->_dompdf->get_option("enable_javascript")) {
+        if (!$this->_dompdf->getConfig()->getEnableJavascript()) {
             return;
         }
 

@@ -50,20 +50,6 @@ class Reflower extends FrameReflower
 
     public function get_min_max_width()
     {
-        if (DEBUGPNG) {
-            // Determine the image's size. Time consuming. Only when really needed?
-            list($img_width, $img_height) = ImageSize::execute($this->_frame->get_image_url());
-            print "get_min_max_width() " .
-                    $this->_frame->get_style()->width . ' ' .
-                    $this->_frame->get_style()->height . ';' .
-                    $this->_frame->get_parent()->get_style()->width . " " .
-                    $this->_frame->get_parent()->get_style()->height . ";" .
-                    $this->_frame->get_parent()->get_parent()->get_style()->width . ' ' .
-                    $this->_frame->get_parent()->get_parent()->get_style()->height . ';' .
-                    $img_width . ' ' .
-                    $img_height . '|';
-        }
-
         $style = $this->_frame->get_style();
 
         $width_forced = true;
@@ -121,7 +107,7 @@ class Reflower extends FrameReflower
             // Resample according to px per inch
             // See also List_Bullet_Image_Frame_Decorator::__construct
             if ($width == 0 && $height == 0) {
-                $dpi = $this->_frame->get_dompdf()->get_option("dpi");
+                $dpi = $this->_frame->get_dompdf()->getConfig()->getDpi();
                 $width = (float) ($img_width * 72) / $dpi;
                 $height = (float) ($img_height * 72) / $dpi;
                 $width_forced = false;
@@ -180,9 +166,6 @@ class Reflower extends FrameReflower
                 $height = $min_height;
             }
         }
-
-        if (DEBUGPNG)
-            print $width . ' ' . $height . ';';
 
         $style->width = $width . "pt";
         $style->height = $height . "pt";

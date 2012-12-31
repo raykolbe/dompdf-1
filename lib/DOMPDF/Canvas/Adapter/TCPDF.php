@@ -12,7 +12,6 @@ use DOMPDF\Canvas\Adapter\CPDF;
  * @author  Benj Carson <benjcarson@digitaljunkies.ca>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
-require_once DOMPDF_LIB_DIR . '/tcpdf/tcpdf.php';
 
 /**
  * TCPDF PDF Rendering interface

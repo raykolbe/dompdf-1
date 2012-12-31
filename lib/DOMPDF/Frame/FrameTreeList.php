@@ -3,7 +3,7 @@
 namespace DOMPDF\Frame;
 
 use DOMPDF\Frame\Frame;
-use DOMPDF\Frame\FrameTreeIterator;
+use DOMPDF\Frame\FrameTreeListIterator;
 
 /**
  * Pre-order IteratorAggregate
@@ -24,10 +24,10 @@ class FrameTreeList implements \IteratorAggregate
     }
 
     /**
-     * @return FrameTreeIterator
+     * @return FrameTreeListIterator
      */
     public function getIterator()
     {
-        return new FrameTreeIterator($this->_root);
+        return new FrameTreeListIterator($this->_root);
     }
 }

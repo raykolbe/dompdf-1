@@ -25,5 +25,12 @@ spl_autoload_register(function($class)
 
             return true;
         }
+    } else if (0 === strpos($class, 'Cpdf\\')) {
+        $path = __DIR__.'/../../../lib/vendor/'.($class = strtr($class, '\\', '/')).'.php';
+        if (is_file($path) && is_readable($path)) {
+            require_once $path;
+
+            return true;
+        }
     }
 });

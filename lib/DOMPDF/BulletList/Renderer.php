@@ -139,7 +139,7 @@ class Renderer extends AbstractRenderer
         // Handle list-style-image
         // If list style image is requested but missing, fall back to predefined types
         if ($style->list_style_image !== "none" &&
-                !ImageCache::is_broken($img = $frame->get_image_url())) {
+                !$this->_dompdf->getConfig()->getResourceDirectory() . '/broken_image.png' != $img = $frame->get_image_url()) {
 
             list($x, $y) = $frame->get_position();
 
@@ -150,7 +150,7 @@ class Renderer extends AbstractRenderer
             //$w = $frame->get_width();
             //$h = $frame->get_height();
             list($width, $height) = ImageSize::execute($img);
-            $dpi = $this->_dompdf->get_option("dpi");
+            $dpi = $this->_dompdf->getConfig()->getDpi();
             $w = ((float) rtrim($width, "px") * 72) / $dpi;
             $h = ((float) rtrim($height, "px") * 72) / $dpi;
 

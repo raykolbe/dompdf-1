@@ -5,7 +5,8 @@ namespace DOMPDF\Frame;
 use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\FrameList;
 use DOMPDF\Frame\Decorator as FrameDecorator;
-use DOMPDF\Block\Decorator as BlockDecorator;
+use DOMPDF\Block\LineBox;
+use DOMPDF\Css\Style;
 use DOMPDF\Exception;
 use \DOMNode;
 
@@ -662,13 +663,11 @@ class Frame
         $this->_opacity = $base_opacity * $opacity;
     }
 
-    public function set_containing_line(Line_Box $line)
+    public function set_containing_line(LineBox $line)
     {
         $this->_containing_line = $line;
     }
-
     
-
     /**
      * Tells if the frame is a text node
      * @return bool
@@ -719,7 +718,7 @@ class Frame
             return $this->_is_cache["in_flow"];
         }
 
-        $enable_css_float = $this->get_style()->get_stylesheet()->get_dompdf()->get_option("enable_css_float");
+        $enable_css_float = $this->get_style()->get_stylesheet()->get_dompdf()->getConfig()->getEnableCssFloat();
         return $this->_is_cache["in_flow"] = !($enable_css_float && $this->get_style()->float !== "none" || $this->is_absolute());
     }
 

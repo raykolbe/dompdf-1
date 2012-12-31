@@ -64,7 +64,7 @@ class Decorator extends FrameDecorator
         // Resample the bullet image to be consistent with 'auto' sized images
         // See also Image_Frame_Reflower::get_min_max_width
         // Tested php ver: value measured in px, suffix "px" not in value: rtrim unnecessary.
-        $dpi = $this->_dompdf->get_option("dpi");
+        $dpi = $this->_dompdf->getConfig()->getDip();
         $this->_width = ((float) rtrim($width, "px") * 72) / $dpi;
         $this->_height = ((float) rtrim($height, "px") * 72) / $dpi;
 

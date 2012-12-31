@@ -1,4 +1,7 @@
 <?php
+
+namespace Cpdf;
+
 /**
  * A PHP class to provide the basic functionality to create a pdf document without
  * any requirement for additional modules.
@@ -17,7 +20,6 @@
  */
 class Cpdf 
 {
-  
   /**
    * @var integer The current number of pdf objects in the document
    */
@@ -4366,9 +4368,6 @@ EOT;
       imagesavealpha($img, false/*!$is_mask && !$mask*/);
       
       $error =  0;
-      //DEBUG_IMG_TEMP
-      //debugpng
-      if (DEBUGPNG) print '[addImagePng '.$file.']';
 
       ob_start();
       @imagepng($img);
@@ -4377,9 +4376,6 @@ EOT;
       if ($data == '') {
         $error = 1;
         $errormsg = 'trouble writing file from GD';
-        //DEBUG_IMG_TEMP
-        //debugpng
-        if (DEBUGPNG) print 'trouble writing file from GD';
       }
 
       if  ($error) {
@@ -4638,9 +4634,6 @@ EOT;
         
         if  (mb_substr($data, 0, 8, '8bit') !=  $header) {
           $error =  1;
-          
-          if (DEBUGPNG) print '[addPngFromFile this file does not have a valid header '.$file.']';
-  
           $errormsg =  'this file does not have a valid header';
         }
       }
@@ -4676,17 +4669,11 @@ EOT;
             if  ($info['compressionMethod'] !=  0) {
               $error =  1;
   
-              //debugpng
-              if (DEBUGPNG) print '[addPngFromFile unsupported compression method '.$file.']';
-  
               $errormsg =  'unsupported compression method';
             }
   
             if  ($info['filterMethod'] !=  0) {
               $error =  1;
-  
-              //debugpng
-              if (DEBUGPNG) print '[addPngFromFile unsupported filter method '.$file.']';
   
               $errormsg =  'unsupported filter method';
             }
@@ -4758,7 +4745,6 @@ EOT;
               
               //unsupported transparency type
               default:
-                if (DEBUGPNG) print '[addPngFromFile unsupported transparency type '.$file.']';
                 break;
             }
   
@@ -4774,29 +4760,17 @@ EOT;
   
         if (!$haveHeader) {
           $error =  1;
-  
-          //debugpng
-          if (DEBUGPNG) print '[addPngFromFile information header is missing '.$file.']';
-  
           $errormsg =  'information header is missing';
         }
   
         if  (isset($info['interlaceMethod']) &&  $info['interlaceMethod']) {
           $error =  1;
-  
-          //debugpng
-          if (DEBUGPNG) print '[addPngFromFile no support for interlaced images in pdf '.$file.']';
-  
           $errormsg =  'There appears to be no support for interlaced images in pdf.';
         }
       }
   
       if  (!$error &&  $info['bitDepth'] > 8) {
         $error =  1;
-  
-        //debugpng
-        if (DEBUGPNG) print '[addPngFromFile bit depth of 8 or less is supported '.$file.']';
-  
         $errormsg =  'only bit depth of 8 or less is supported';
       }
       
@@ -4819,10 +4793,6 @@ EOT;
         
         default: 
           $error =  1;
-  
-          //debugpng
-          if (DEBUGPNG) print '[addPngFromFile alpha channel not supported: '.$info['colorType'].' '.$file.']';
-  
           $errormsg =  'transparancey alpha channel not supported, transparency only supported for palette images.';
         }
       }
@@ -4938,9 +4908,6 @@ EOT;
     {
     if ( $this->image_iscached($imgname) ) {
       $label = $this->imagelist[$imgname]['label'];
-      //debugpng
-      //if (DEBUGPNG) print '[addJpegImage_common Duplicate '.$imgname.']';
-
     } else {
       if ($data == null) {
         $this->addMessage('addJpegImage_common error - ('.$imgname.') data not present!');

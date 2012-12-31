@@ -15,26 +15,6 @@ use DOMPDF\Font\Metrics as FontMetrics;
  * @author  Fabien Ménager <fabien.menager@gmail.com>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
-require_once DOMPDF_LIB_DIR . "/class.pdf.php";
-
-/**
- * Name of the font cache file
- *
- * This file must be writable by the webserver process only to update it
- * with save_font_families() after adding the .afm file references of a new font family
- * with Font_Metrics::save_font_families().
- * This is typically done only from command line with load_font.php on converting
- * ttf fonts to ufm with php-font-lib.
- *
- * Declared here because PHP5 prevents constants from being declared with expressions
- */
-if (!defined("__DOMPDF_FONT_CACHE_FILE")) {
-    if (file_exists(DOMPDF_FONT_DIR . "dompdf_font_family_cache")) {
-        define('__DOMPDF_FONT_CACHE_FILE', DOMPDF_FONT_DIR . "dompdf_font_family_cache");
-    } else {
-        define('__DOMPDF_FONT_CACHE_FILE', DOMPDF_FONT_DIR . "dompdf_font_family_cache.dist.php");
-    }
-}
 
 /**
  * The font metrics class
@@ -48,10 +28,7 @@ if (!defined("__DOMPDF_FONT_CACHE_FILE")) {
  */
 class Metrics
 {
-    /**
-     * @see __DOMPDF_FONT_CACHE_FILE
-     */
-    const CACHE_FILE = __DOMPDF_FONT_CACHE_FILE;
+    protected static $cacheFile = null;
 
     /**
      * Underlying {@link Canvas} object to perform text size calculations
@@ -81,6 +58,20 @@ class Metrics
             }
 
             self::$_pdf = $canvas;
+            
+            $config = $canvas->get_dompdf()->getConfig();
+            if (file_exists($config->getFontCacheDirectory() . '/dompdf_font_family_cache')) {
+                self::$cacheFile = $config->getFontCacheDirectory() . '/dompdf_font_family_cache';
+            } else {
+                self::$cacheFile = $config->getFontCacheDirectory() . '/dompdf_font_family_cache.dist.php';
+            }
+            
+            if (!is_writable(self::$cacheFile)) {
+                throw new \Exception(sprintf(
+                    "Font cache file not found or not writable. We were given '%s'",
+                    self::$cacheFile
+                ));
+            }
         }
     }
 
@@ -163,37 +154,36 @@ class Metrics
          * If only the subtype fails, nevertheless return failure.
          * Only on checking the fallback font, check various subtypes on same font.
          */
-
         $subtype = strtolower($subtype_raw);
 
         if ($family_raw) {
             $family = str_replace(array("'", '"'), "", strtolower($family_raw));
-
+            
             if (isset(self::$_font_lookup[$family][$subtype])) {
                 return $cache[$family_raw][$subtype_raw] = self::$_font_lookup[$family][$subtype];
             }
-
+            
             return null;
         }
-
+        
         $family = "serif";
 
         if (isset(self::$_font_lookup[$family][$subtype])) {
             return $cache[$family_raw][$subtype_raw] = self::$_font_lookup[$family][$subtype];
         }
-
+        
         if (!isset(self::$_font_lookup[$family])) {
             return null;
         }
 
         $family = self::$_font_lookup[$family];
-
+        
         foreach ($family as $sub => $font) {
             if (strpos($subtype, $sub) !== false) {
                 return $cache[$family_raw][$subtype_raw] = $font;
             }
         }
-
+        
         if ($subtype !== "normal") {
             foreach ($family as $sub => $font) {
                 if ($sub !== "normal") {
@@ -207,7 +197,7 @@ class Metrics
         if (isset($family[$subtype])) {
             return $cache[$family_raw][$subtype_raw] = $family[$subtype];
         }
-
+        
         return null;
     }
 
@@ -237,7 +227,7 @@ class Metrics
         $cache_data = var_export(self::$_font_lookup, true);
         $cache_data = str_replace('\'' . DOMPDF_FONT_DIR, 'DOMPDF_FONT_DIR . \'', $cache_data);
         $cache_data = "<" . "?php return $cache_data ?" . ">";
-        file_put_contents(self::CACHE_FILE, $cache_data);
+        file_put_contents(self::$cacheFile, $cache_data);
     }
 
     /**
@@ -247,17 +237,17 @@ class Metrics
      */
     public static function load_font_families()
     {
-        if (!is_readable(self::CACHE_FILE)) {
+        if (!is_readable(self::$cacheFile)) {
             return;
         }
 
-        self::$_font_lookup = require_once self::CACHE_FILE;
+        self::$_font_lookup = require_once self::$cacheFile;
 
         // If the font family cache is still in the old format
         if (self::$_font_lookup === 1) {
-            $cache_data = file_get_contents(self::CACHE_FILE);
-            file_put_contents(self::CACHE_FILE, "<" . "?php return $cache_data ?" . ">");
-            self::$_font_lookup = require_once self::CACHE_FILE;
+            $cache_data = file_get_contents(self::$cacheFile);
+            file_put_contents(self::$cacheFile, "<" . "?php return $cache_data ?" . ">");
+            self::$_font_lookup = require_once self::$cacheFile;
         }
     }
 

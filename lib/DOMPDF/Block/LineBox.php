@@ -4,6 +4,7 @@ namespace DOMPDF\Block;
 
 use DOMPDF\Block\Decorator as BlockDecorator;
 use DOMPDF\Page\Decorator as PageDecorator;
+use DOMPDF\Frame\Decorator as AbstractFrame;
 
 /**
  * @package dompdf
@@ -142,7 +143,7 @@ class LineBox
 
     public function get_float_offsets()
     {
-        $enable_css_float = $this->_block_frame->get_dompdf()->get_option("enable_css_float");
+        $enable_css_float = $this->_block_frame->get_dompdf()->getConfig()->getEnableCssFloat();
         if (!$enable_css_float) {
             return;
         }
@@ -236,7 +237,7 @@ class LineBox
     /**
      * @param Frame $frame
      */
-    public function add_frame(Frame $frame)
+    public function add_frame(AbstractFrame $frame)
     {
         $this->_frames[] = $frame;
     }

@@ -3,6 +3,7 @@
 namespace DOMPDF\Table;
 
 use DOMPDF\DOMPDF;
+use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Decorator as FrameDecorator;
 use DOMPDF\Frame\Factory as FrameFactory;
 use DOMPDF\Table\Cellmap;

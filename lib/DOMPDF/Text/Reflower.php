@@ -354,7 +354,7 @@ class Reflower extends FrameReflower
                 /* foreach($words as &$word) {
                   $word = Font_Metrics::get_text_width($word, $font, $size, $word_spacing, $char_spacing);
                   } */
-                array_walk($words, create_function('&$val,$str', '$val = Font_Metrics::get_text_width($str, "' . addslashes($font) . '", ' . $size . ', ' . $word_spacing . ', ' . $char_spacing . ');'));
+                array_walk($words, create_function('&$val,$str', '$val = \DOMPDF\Font\Metrics::get_text_width($str, "' . addslashes($font) . '", ' . $size . ', ' . $word_spacing . ', ' . $char_spacing . ');'));
                 arsort($words);
                 $min = reset($words);
                 break;
@@ -364,14 +364,14 @@ class Reflower extends FrameReflower
                 /* foreach($words as &$word) {
                   $word = Font_Metrics::get_text_width($word, $font, $size, $word_spacing, $char_spacing);
                   } */
-                array_walk($lines, create_function('&$val,$str', '$val = Font_Metrics::get_text_width($str, "' . addslashes($font) . '", ' . $size . ', ' . $word_spacing . ', ' . $char_spacing . ');'));
+                array_walk($lines, create_function('&$val,$str', '$val = \DOMPDF\Font\Metrics::get_text_width($str, "' . addslashes($font) . '", ' . $size . ', ' . $word_spacing . ', ' . $char_spacing . ');'));
 
                 arsort($lines);
                 $min = reset($lines);
                 break;
 
             case "nowrap":
-                $min = Font_Metrics::get_text_width($this->_collapse_white_space($str), $font, $size, $word_spacing, $char_spacing);
+                $min = FontMetrics::get_text_width($this->_collapse_white_space($str), $font, $size, $word_spacing, $char_spacing);
                 break;
         }
 
@@ -393,7 +393,7 @@ class Reflower extends FrameReflower
                 /* foreach($words as &$word) {
                   $word = Font_Metrics::get_text_width($word, $font, $size, $word_spacing, $char_spacing);
                   } */
-                array_walk($lines, create_function('&$val,$str', '$val = Font_Metrics::get_text_width($str, "' . $font . '", ' . $size . ', ' . $word_spacing . ', ' . $char_spacing . ');'));
+                array_walk($lines, create_function('&$val,$str', '$val = \DOMPDF\Font\Metrics::get_text_width($str, "' . $font . '", ' . $size . ', ' . $word_spacing . ', ' . $char_spacing . ');'));
                 arsort($lines);
                 reset($lines);
                 $str = key($lines);

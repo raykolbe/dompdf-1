@@ -12,19 +12,14 @@ use DOMPDF\DOMPDF;
  */
 
 /**
- * Create canvas instances
- *
- * The canvas factory creates canvas instances based on the
- * availability of rendering backends and config options.
- *
- * @package dompdf
+ * Abstract factory responsible for creating a canvas instance.
  */
 class Factory
 {
     /**
-     * Constructor is private: this is a static class
+     * Class constructor. Private & final to implement singelton pattern.
      */
-    private function __construct()
+    private final function __construct()
     {        
     }
 
@@ -36,28 +31,36 @@ class Factory
      *
      * @return Canvas
      */
-    public static function get_instance(DOMPDF $dompdf, $paper = null, $orientation = null, $class = null)
+    public static function get_instance(DOMPDF $dompdf, $paper = null, $orientation = null)
     {
-        $backend = strtolower(DOMPDF_PDF_BACKEND);
-
-        if (isset($class) && class_exists($class, false)) {
-            $class .= "_Adapter";
-        } else if ((DOMPDF_PDF_BACKEND === "auto" || $backend === "pdflib" ) &&
-                class_exists("PDFLib", false)) {
-            $class = "PDFLib_Adapter";
+        $renderer = $dompdf->getConfig()->getRenderingEngine();
+        $class = null;
+        
+        switch (strtolower($renderer)) {
+            case 'tcpdf' :
+                $class = 'DOMPDF\Canvas\Adapter\TCPDF';
+                break;
+            case 'gd' :
+                $class = 'DOMPDF\Canvas\Adapter\GD';
+                break;
+            case 'pdflib' :
+            case 'auto' :
+                $class = 'DOMPDF\Canvas\Adapter\GD';
+                break;
+            default:
+                $class = 'DOMPDF\Canvas\Adapter\CPDF';
         }
 
-        // FIXME The TCPDF adapter is not ready yet
-        //else if ( (DOMPDF_PDF_BACKEND === "auto" || $backend === "cpdf") )
-        //  $class = "CPDF_Adapter";
-        else if ($backend === "tcpdf") {
-            $class = "TCPDF_Adapter";
-        } else if ($backend === "gd") {
-            $class = "GD_Adapter";
-        } else {
-            $class = "CPDF_Adapter";
+        $canvas = new $class($paper, $orientation, $dompdf);
+        
+        if (!($canvas instanceof \DOMPDF\Canvas\Canvas)) {
+            throw new \UnexpectedValueException(sprintf(
+                "Rendering engine (canvas backend) must be an instance of " .
+                "DOMPDF\Canvas\Canvas. We were given '%s'",
+                get_class($canvas)
+            ));
         }
-
-        return new $class($paper, $orientation, $dompdf);
+        
+        return $canvas;
     }
 }

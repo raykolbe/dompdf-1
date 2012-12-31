@@ -34,14 +34,7 @@ class Cache
      * @var array
      */
     protected static $_cache = array();
-
-    /**
-     * The url to the "broken image" used when images can't be loade
-     * 
-     * @var string
-     */
-    public static $broken_image;
-
+    
     /**
      * Resolve and fetch an image for use.
      *
@@ -63,7 +56,7 @@ class Cache
 
         $data_uri = strpos($parsed_url['protocol'], "data:") === 0;
         $full_url = null;
-        $enable_remote = $dompdf->get_option("enable_remote");
+        $enable_remote = $dompdf->getConfig()->getEnableRemote();
 
         try {
 
@@ -84,7 +77,7 @@ class Cache
 
                 // From remote
                 else {
-                    $tmp_dir = $dompdf->get_option("temp_dir");
+                    $tmp_dir = $dompdf->getConfig()->getTemporaryDirectory();
                     $resolved_url = tempnam($tmp_dir, "ca_dompdf_img_");
                     $image = "";
 
@@ -143,7 +136,7 @@ class Cache
                 }
             }
         } catch (ImageException $e) {
-            $resolved_url = self::$broken_image;
+            $resolved_url = $dompdf->getConfig()->getResourceDirectory() . '/broken_image.png';
             $type = IMAGETYPE_PNG;
             $message = $e->getMessage() . " \n $url";
         }
@@ -161,8 +154,6 @@ class Cache
             return;
 
         foreach (self::$_cache as $file) {
-            if (DEBUGPNG)
-                print "[clear unlink $file]";
             unlink($file);
         }
 
@@ -186,11 +177,4 @@ class Cache
 
         return (isset($image_types[$type]) ? $image_types[$type] : null);
     }
-
-    public static function is_broken($url)
-    {
-        return $url === self::$broken_image;
-    }
 }
-
-ImageCache::$broken_image = DOMPDF_LIB_DIR . "/res/broken_image.png";

@@ -2,6 +2,7 @@
 
 namespace DOMPDF\Block;
 
+use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Reflower as FrameReflower;
 use DOMPDF\Block\Decorator as BlockDecorator;
 use DOMPDF\Font\Metrics as FontMetrics;
@@ -609,7 +610,7 @@ class Reflower extends FrameReflower
      */
     public function process_clear(Frame $child)
     {
-        $enable_css_float = $this->get_dompdf()->get_option("enable_css_float");
+        $enable_css_float = $this->get_dompdf()->getConfig()->getEnableCssFloat();
         if (!$enable_css_float) {
             return;
         }
@@ -642,7 +643,7 @@ class Reflower extends FrameReflower
      */
     public function process_float(Frame $child, $cb_x, $cb_w)
     {
-        $enable_css_float = $this->_frame->get_dompdf()->get_option("enable_css_float");
+        $enable_css_float = $this->_frame->get_dompdf()->getConfig()->getEnableCssFloat();
         if (!$enable_css_float) {
             return;
         }
@@ -700,7 +701,7 @@ class Reflower extends FrameReflower
     /**
      * @param Frame_Decorator $block
      */
-    public function reflow(Block_Frame_Decorator $block = null)
+    public function reflow(BlockDecorator $block = null)
     {
         // Check if a page break is forced
         $page = $this->_frame->get_root();

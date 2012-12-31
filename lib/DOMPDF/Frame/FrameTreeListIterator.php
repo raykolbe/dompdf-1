@@ -12,7 +12,7 @@ use DOMPDF\Frame\Frame;
  * @access private
  * @package dompdf
  */
-class FrameTreeIterator implements \Iterator
+class FrameTreeListIterator implements \Iterator
 {
     /**
      * @var Frame

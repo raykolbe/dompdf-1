@@ -261,7 +261,7 @@ class Style
             $d["elevation"] = "level";
             $d["empty_cells"] = "show";
             $d["float"] = "none";
-            $d["font_family"] = $stylesheet->get_dompdf()->get_option("default_font");
+            $d["font_family"] = $stylesheet->get_dompdf()->getConfig()->getDefaultFontFamily();
             $d["font_size"] = "medium";
             $d["font_style"] = "normal";
             $d["font_variant"] = "normal";
@@ -502,7 +502,7 @@ class Style
             }
 
             if (($i = mb_strpos($l, "px")) !== false) {
-                $dpi = $this->_stylesheet->get_dompdf()->get_option("dpi");
+                $dpi = $this->_stylesheet->get_dompdf()->getConfig()->getDpi();
                 $ret += ( mb_substr($l, 0, $i) * 72 ) / $dpi;
                 continue;
             }
@@ -844,9 +844,9 @@ class Style
 
         $family = null;
         $font = FontMetrics::get_font($family, $subtype);
-
+        
         if ($font) {
-            return$this->_font_family = $font;
+            return $this->_font_family = $font;
         }
 
         throw new Exception("Unable to find a suitable font replacement for: '" . $this->_props["font_family"] . "'");

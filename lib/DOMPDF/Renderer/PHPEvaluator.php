@@ -32,7 +32,7 @@ class PHPEvaluator
 
     public function evaluate($code, $vars = array())
     {
-        if (!$this->_canvas->_dompdf->get_option("enable_php"))
+        if (!$this->_canvas->_dompdf->getConfig()->setEnableRenderPhp())
             return;
 
         // Set up some variables for the inline code

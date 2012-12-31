@@ -3,6 +3,15 @@
 namespace DOMPDF\Renderer;
 
 use DOMPDF\Frame\Frame;
+use DOMPDF\Block\Renderer as BlockRenderer;
+use DOMPDF\Inline\Renderer as InlineRenderer;
+use DOMPDF\Text\Renderer as TextRenderer;
+use DOMPDF\Image\Renderer as ImageRenderer;
+use DOMPDF\Table\Cell\Renderer as TableCellRenderer;
+use DOMPDF\Table\Group\Renderer as TableGroupRenderer;
+use DOMPDF\BulletList\Renderer as BulletListRenderer;
+use DOMPDF\Renderer\PHPEvaluator;
+use DOMPDF\Javascript\Embedder as JavascriptEmbedder;
 
 /**
  * @package dompdf
@@ -236,39 +245,39 @@ class Renderer extends AbstractRenderer
 
             switch ($type) {
                 case "block":
-                    $this->_renderers[$type] = new Block_Renderer($this->_dompdf);
+                    $this->_renderers[$type] = new BlockRenderer($this->_dompdf);
                     break;
 
                 case "inline":
-                    $this->_renderers[$type] = new Inline_Renderer($this->_dompdf);
+                    $this->_renderers[$type] = new InlineRenderer($this->_dompdf);
                     break;
 
                 case "text":
-                    $this->_renderers[$type] = new Text_Renderer($this->_dompdf);
+                    $this->_renderers[$type] = new TextRenderer($this->_dompdf);
                     break;
 
                 case "image":
-                    $this->_renderers[$type] = new Image_Renderer($this->_dompdf);
+                    $this->_renderers[$type] = new ImageRenderer($this->_dompdf);
                     break;
 
                 case "table-cell":
-                    $this->_renderers[$type] = new Table_Cell_Renderer($this->_dompdf);
+                    $this->_renderers[$type] = new TableCellRenderer($this->_dompdf);
                     break;
 
                 case "table-row-group":
-                    $this->_renderers[$type] = new Table_Row_Group_Renderer($this->_dompdf);
+                    $this->_renderers[$type] = new TableGroupRenderer($this->_dompdf);
                     break;
 
                 case "list-bullet":
-                    $this->_renderers[$type] = new List_Bullet_Renderer($this->_dompdf);
+                    $this->_renderers[$type] = new BulletListRenderer($this->_dompdf);
                     break;
 
                 case "php":
-                    $this->_renderers[$type] = new PHP_Evaluator($this->_canvas);
+                    $this->_renderers[$type] = new PHPEvaluator($this->_canvas);
                     break;
 
                 case "javascript":
-                    $this->_renderers[$type] = new Javascript_Embedder($this->_dompdf);
+                    $this->_renderers[$type] = new JavascriptEmbedder($this->_dompdf);
                     break;
             }
         }

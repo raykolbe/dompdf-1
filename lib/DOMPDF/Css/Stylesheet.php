@@ -3,6 +3,7 @@
 namespace DOMPDF\Css;
 
 use DOMPDF\DOMPDF;
+use DOMPDF\Frame\Tree as TreeFrame;
 use DOMPDF\Exception;
 use DOMPDF\Css\AttributeTranslator;
 use DOMPDF\Url\Url;
@@ -17,11 +18,6 @@ use \DOMXPath;
  * @author  Fabien Ménager <fabien.menager@gmail.com>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
-/**
- * The location of the default built-in CSS file.
- * {@link Stylesheet::DEFAULT_STYLESHEET}
- */
-define('__DEFAULT_STYLESHEET', DOMPDF_LIB_DIR . DIRECTORY_SEPARATOR . "res" . DIRECTORY_SEPARATOR . "html.css");
 
 /**
  * The master stylesheet class
@@ -36,12 +32,6 @@ define('__DEFAULT_STYLESHEET', DOMPDF_LIB_DIR . DIRECTORY_SEPARATOR . "res" . DI
  */
 class Stylesheet
 {
-    /**
-     * The location of the default built-in CSS file.
-     */
-
-    const DEFAULT_STYLESHEET = __DEFAULT_STYLESHEET;
-
     /**
      * User agent stylesheet origin
      *
@@ -804,7 +794,7 @@ class Stylesheet
      *
      * @param Frame_Tree $tree
      */
-    public function apply_styles(Frame_Tree $tree)
+    public function apply_styles(TreeFrame $tree)
     {
         // Use XPath to select nodes.  This would be easier if we could attach
         // Frame objects directly to DOMNodes using the setUserData() method, but
@@ -1023,7 +1013,7 @@ class Stylesheet
 
                     case "media":
                         $acceptedmedia = self::$ACCEPTED_GENERIC_MEDIA_TYPES;
-                        $acceptedmedia[] = $this->_dompdf->get_option("default_media_type");
+                        $acceptedmedia[] = $this->_dompdf->getConfig()->getDefaultMediaType();
 
                         $media = preg_split("/\s*,\s*/", mb_strtolower(trim($match[3])));
 
@@ -1144,7 +1134,7 @@ class Stylesheet
 
         if (count($arr) > 0) {
             $acceptedmedia = self::$ACCEPTED_GENERIC_MEDIA_TYPES;
-            $acceptedmedia[] = $this->_dompdf->get_option("default_media_type");
+            $acceptedmedia[] = $this->_dompdf->getConfig()->getDefaultMediaType();
 
             // @import url media_type [media_type...]
             foreach ($arr as $type) {

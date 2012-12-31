@@ -191,7 +191,7 @@ class PDFLib implements Canvas
         if (self::$IN_MEMORY)
             $this->_pdf->begin_document("", "");
         else {
-            $tmp_dir = $this->_dompdf->get_options("temp_dir");
+            $tmp_dir = $this->_dompdf->getConfig()->getTemporaryDirectory();
             $tmp_name = tempnam($tmp_dir, "libdompdf_pdf_");
             @unlink($tmp_name);
             $this->_file = "$tmp_name.pdf";
@@ -926,13 +926,13 @@ class PDFLib implements Canvas
         $desc = $this->_pdf->get_value("descender", $fh);
 
         // $desc is usually < 0,
-        $ratio = $this->_dompdf->get_option("font_height_ratio");
+        $ratio = $this->_dompdf->getConfig()->getFontHeightRatio();
         return $size * ($asc - $desc) * $ratio;
     }
 
     public function get_font_baseline($font, $size)
     {
-        $ratio = $this->_dompdf->get_option("font_height_ratio");
+        $ratio = $this->_dompdf->getConfig()->getFontHeightRatio();
         return $this->get_font_height($font, $size) / $ratio * 1.1;
     }
 

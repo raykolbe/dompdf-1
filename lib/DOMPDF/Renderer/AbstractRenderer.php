@@ -26,7 +26,7 @@ use DOMPDF\Gd\ImageSize;
  * @access private
  * @package dompdf
  */
-abstract class Renderer 
+abstract class AbstractRenderer 
 {
     /**
      * Rendering backend
@@ -89,7 +89,7 @@ abstract class Renderer
         );
 
         // Bail if the image is no good
-        if (ImageCache::is_broken($img)) {
+        if ($img == $this->_dompdf->getConfig()->getResourceDirectory() . '/broken_image.png') {
             return;
         }
 
@@ -105,7 +105,7 @@ abstract class Renderer
         }
 
         $repeat = $style->background_repeat;
-        $dpi = $this->_dompdf->get_option("dpi");
+        $dpi = $this->_dompdf->getConfig()->getDpi();
 
         //Increase background resolution and dependent box size according to image resolution to be placed in
         //Then image can be copied in without resize
@@ -391,7 +391,7 @@ abstract class Renderer
             // Note: CPDF_Adapter image converts y position
             $this->_canvas->get_cpdf()->addImagePng($filedummy, $x, $this->_canvas->get_height() - $y - $height, $width, $height, $bg);
         } else {
-            $tmp_dir = $this->_dompdf->get_option("temp_dir");
+            $tmp_dir = $this->_dompdf->getConfig()->getTemporaryDirectory();
             $tmp_name = tempnam($tmp_dir, "bg_dompdf_img_");
             @unlink($tmp_name);
             $tmp_file = "$tmp_name.png";

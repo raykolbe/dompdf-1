@@ -4,11 +4,14 @@ namespace DOMPDF\Frame;
 
 use DOMPDF\DOMPDF;
 use DOMPDF\Exception;
+use DOMPDF\Css\Style;
+use DOMPDF\Positioner\AbstractPositioner;
 use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Factory as FrameFactory;
 use DOMPDF\Frame\Decorator as FrameDecorator;
 use DOMPDF\Frame\Reflower as FrameReflower;
 use DOMPDF\Frame\FrameTreeList;
+use DOMPDF\Block\Decorator as BlockDecorator;
 use DOMPDF\Number\Dec2Roman;
 use DOMPDF\String\UniChr;
 use \DOMNode;
@@ -331,7 +334,7 @@ abstract class Decorator extends Frame
      */
     public function append_child(Frame $child, $update_node = true)
     {
-        while ($child instanceof Frame_Decorator) {
+        while ($child instanceof FrameDecorator) {
             $child = $child->_frame;
         }
 
@@ -345,11 +348,11 @@ abstract class Decorator extends Frame
      */
     public function insert_child_before(Frame $new_child, Frame $ref, $update_node = true)
     {
-        while ($new_child instanceof Frame_Decorator) {
+        while ($new_child instanceof FrameDecorator) {
             $new_child = $new_child->_frame;
         }
 
-        if ($ref instanceof Frame_Decorator) {
+        if ($ref instanceof FrameDecorator) {
             $ref = $ref->_frame;
         }
 
@@ -363,7 +366,7 @@ abstract class Decorator extends Frame
      */
     public function insert_child_after(Frame $new_child, Frame $ref, $update_node = true)
     {
-        while ($new_child instanceof Frame_Decorator) {
+        while ($new_child instanceof FrameDecorator) {
             $new_child = $new_child->_frame;
         }
 
@@ -491,7 +494,7 @@ abstract class Decorator extends Frame
         return new FrameTreeList($this);
     }
 
-    public function set_positioner(Positioner $posn)
+    public function set_positioner(AbstractPositioner $posn)
     {
         $this->_positioner = $posn;
         if ($this->_frame instanceof FrameDecorator) {
@@ -740,7 +743,7 @@ abstract class Decorator extends Frame
         $this->_positioner->move($offset_x, $offset_y, $ignore_self);
     }
 
-    public final function reflow(Block_Frame_Decorator $block = null)
+    public final function reflow(BlockDecorator $block = null)
     {
         // Uncomment this to see the frames before they're laid out, instead of
         // during rendering.

@@ -2,6 +2,9 @@
 
 namespace DOMPDF;
 
+use DOMPDF\Config;
+use DOMPDF\Renderer\Renderer;
+use DOMPDF\Css\Stylesheet;
 use DOMPDF\Frame\Factory as FrameFactory;
 use DOMPDF\Frame\Tree as FrameTree;
 use DOMPDF\Canvas\Factory as CanvasFactory;
@@ -214,34 +217,15 @@ class DOMPDF
         "symbol", "zapfdinbats"
     );
     
-    private $_options = array(
-        // Directories
-        "temp_dir" => DOMPDF_TEMP_DIR,
-        "font_dir" => DOMPDF_FONT_DIR,
-        "font_cache" => DOMPDF_FONT_CACHE,
-        "chroot" => DOMPDF_CHROOT,
-        "log_output_file" => DOMPDF_LOG_OUTPUT_FILE,
-        // Rendering
-        "default_media_type" => DOMPDF_DEFAULT_MEDIA_TYPE,
-        "default_paper_size" => DOMPDF_DEFAULT_PAPER_SIZE,
-        "default_font" => DOMPDF_DEFAULT_FONT,
-        "dpi" => DOMPDF_DPI,
-        "font_height_ratio" => DOMPDF_FONT_HEIGHT_RATIO,
-        // Features
-        "enable_unicode" => DOMPDF_UNICODE_ENABLED,
-        "enable_php" => DOMPDF_ENABLE_PHP,
-        "enable_remote" => DOMPDF_ENABLE_REMOTE,
-        "enable_css_float" => DOMPDF_ENABLE_CSS_FLOAT,
-        "enable_javascript" => DOMPDF_ENABLE_JAVASCRIPT,
-        "enable_html5_parser" => DOMPDF_ENABLE_HTML5PARSER,
-        "enable_font_subsetting" => DOMPDF_ENABLE_FONTSUBSETTING
-    );
+    private $config = null;
 
     /**
      * Class constructor
      */
-    public function __construct()
+    public function __construct(Config $config)
     {
+        $this->config = $config;
+        
         $this->_locale_standard = sprintf('%.1f', 1.0) == '1.0';
 
         $this->save_locale();
@@ -260,47 +244,10 @@ class DOMPDF
 
         $this->restore_locale();
     }
-
-    /**
-     * Get the dompdf option value
-     *
-     * @param string $key
-     *
-     * @return mixed
-     * @throws DOMPDF_Exception
-     */
-    public function get_option($key)
+    
+    public function getConfig()
     {
-        if (!array_key_exists($key, $this->_options)) {
-            throw new DOMPDF_Exception("Option '$key' doesn't exist");
-        }
-
-        return $this->_options[$key];
-    }
-
-    /**
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @throws DOMPDF_Exception
-     */
-    public function set_option($key, $value)
-    {
-        if (!array_key_exists($key, $this->_options)) {
-            throw new Exception("Option '$key' doesn't exist");
-        }
-
-        $this->_options[$key] = $value;
-    }
-
-    /**
-     * @param array $options
-     */
-    public function set_options(array $options)
-    {
-        foreach ($options as $key => $value) {
-            $this->set_option($key, $value);
-        }
+        return $this->config;
     }
 
     /**
@@ -488,7 +435,7 @@ class DOMPDF
             list($this->_protocol, $this->_base_host, $this->_base_path) = Url::explode($file);
         }
 
-        if (!$this->get_option("enable_remote") && ($this->_protocol != "" && $this->_protocol !== "file://" )) {
+        if (!$this->getConfig()->getEnableRemote() && ($this->_protocol != "" && $this->_protocol !== "file://" )) {
             throw new Exception("Remote file requested, but DOMPDF_ENABLE_REMOTE is false.");
         }
 
@@ -497,11 +444,6 @@ class DOMPDF
             $realfile = realpath($file);
             if (!$file) {
                 throw new Exception("File '$file' not found.");
-            }
-
-            $chroot = $this->get_option("chroot");
-            if (strpos($realfile, $chroot) !== 0) {
-                throw new Exception("Permission denied on $file. The file could not be found under the directory specified by DOMPDF_CHROOT.");
             }
 
             // Exclude dot files (e.g. .htaccess)
@@ -532,7 +474,7 @@ class DOMPDF
 
     /**
      * Loads an HTML string
-     * Parse errors are stored in the global array _dompdf_warnings.
+     * 
      * @todo use the $encoding variable
      *
      * @param string $str      HTML text to load
@@ -591,7 +533,7 @@ class DOMPDF
         }
 
         // Parse embedded php, first-pass
-        if ($this->get_option("enable_php")) {
+        if ($this->getConfig()->getEnableRenderPhp()) {
             ob_start();
             eval("?" . ">$str");
             $str = ob_get_clean();
@@ -610,7 +552,7 @@ class DOMPDF
         // https://developer.mozilla.org/en/mozilla's_quirks_mode
         $quirksmode = false;
 
-        if ($this->get_option("enable_html5_parser")) {
+        if ($this->getConfig()->getEnableHtml5Parser()) {
             $tokenizer = new Html5Tokenizer($str);
             $tokenizer->parse();
             $doc = $tokenizer->save();
@@ -656,8 +598,6 @@ class DOMPDF
 
         $this->_tree = new FrameTree($this->_xml);
 
-        restore_error_handler();
-
         $this->restore_locale();
     }
 
@@ -686,10 +626,14 @@ class DOMPDF
 
         $this->_tree->build_tree();
 
-        $this->_css->load_css_file(Stylesheet::DEFAULT_STYLESHEET, Stylesheet::ORIG_UA);
+        $defaultStylesheet = $this->getConfig()->getDefaultStylesheetPath();
+        if (!$defaultStylesheet) {
+            throw new \UnexpectedValueException('Default stylesheet must be a valid path to the default stylesheet.');
+        }
+        $this->_css->load_css_file($defaultStylesheet, Stylesheet::ORIG_UA);
 
         $acceptedmedia = Stylesheet::$ACCEPTED_GENERIC_MEDIA_TYPES;
-        $acceptedmedia[] = $this->get_option("default_media_type");
+        $acceptedmedia[] = $this->getConfig()->getDefaultMediaType();
 
         // <base href="" />
         $base_nodes = $this->_xml->getElementsByTagName("base");
@@ -849,16 +793,6 @@ class DOMPDF
     {
         $this->save_locale();
 
-        $log_output_file = $this->get_option("log_output_file");
-        if ($log_output_file) {
-            if (!file_exists($log_output_file) && is_writable(dirname($log_output_file))) {
-                touch($log_output_file);
-            }
-
-            $this->_start_time = microtime(true);
-            ob_start();
-        }
-
         $this->_process_html();
 
         $this->_css->apply_styles($this->_tree);
@@ -879,8 +813,9 @@ class DOMPDF
 
         $this->_pdf = CanvasFactory::get_instance($this, $this->_paper_size, $this->_paper_orientation);
         FontMetrics::init($this->_pdf);
+        FontMetrics::load_font_families();
 
-        if ($this->get_option("enable_font_subsetting") && $this->_pdf instanceof CPDFAdapter) {
+        if ($this->getConfig()->getEnableFontSubsetting() && $this->_pdf instanceof CPDFAdapter) {
             foreach ($this->_tree->get_frames() as $frame) {
                 $style = $frame->get_style();
                 $node = $frame->get_node();
@@ -964,36 +899,6 @@ class DOMPDF
     }
 
     /**
-     * Writes the output buffer in the log file
-     *
-     * @return void
-     */
-    private function write_log()
-    {
-        $log_output_file = $this->get_option("log_output_file");
-        if (!$log_output_file || !is_writable($log_output_file)) {
-            return;
-        }
-
-        $frames = Frame::$ID_COUNTER;
-        $memory = memory_get_peak_usage(true) / 1024;
-        $time = (microtime(true) - $this->_start_time) * 1000;
-
-        $out = sprintf(
-                "<span style='color: #000' title='Frames'>%6d</span>" .
-                "<span style='color: #009' title='Memory'>%10.2f KB</span>" .
-                "<span style='color: #900' title='Time'>%10.2f ms</span>" .
-                "<span  title='Quirksmode'>  " .
-                ($this->_quirksmode ? "<span style='color: #d00'> ON</span>" : "<span style='color: #0d0'>OFF</span>") .
-                "</span><br />", $frames, $memory, $time);
-
-        $out .= ob_get_clean();
-
-        $log_output_file = $this->get_option("log_output_file");
-        file_put_contents($log_output_file, $out);
-    }
-
-    /**
      * Streams the PDF to the client
      *
      * The file will open a download dialog by default.  The options
@@ -1016,8 +921,6 @@ class DOMPDF
     public function stream($filename, $options = null)
     {
         $this->save_locale();
-
-        $this->write_log();
 
         if (!is_null($this->_pdf)) {
             $this->_pdf->stream($filename, $options);
@@ -1044,8 +947,6 @@ class DOMPDF
     public function output($options = null)
     {
         $this->save_locale();
-
-        $this->write_log();
 
         if (is_null($this->_pdf)) {
             return null;

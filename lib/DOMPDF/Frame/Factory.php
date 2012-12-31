@@ -4,6 +4,7 @@ namespace DOMPDF\Frame;
 
 use DOMPDF\DOMPDF;
 use DOMPDF\Frame\Frame;
+use DOMPDF\Css\Style;
 use DOMPDF\Frame\Factory as FrameFactory;
 use DOMPDF\Page\Decorator as PageDecorator;
 use DOMPDF\Page\Reflower as PageReflower;
@@ -71,134 +72,137 @@ class Factory
         }
 
         $display = $style->display;
-
+        
+        $positioner = '\DOMPDF';
+        $decorator = '\DOMPDF';
+        $reflower = '\DOMPDF';
+        
         switch ($display) {
-
             case "block":
-                $positioner = "Block";
-                $decorator = "Block";
-                $reflower = "Block";
+                $positioner .= "\Block";
+                $decorator .= "\Block";
+                $reflower .= "\Block";
                 break;
 
             case "inline-block":
-                $positioner = "Inline";
-                $decorator = "Block";
-                $reflower = "Block";
+                $positioner .= "\Inline";
+                $decorator .= "\Block";
+                $reflower .= "\Block";
                 break;
 
             case "inline":
-                $positioner = "Inline";
+                $positioner .= "\Inline";
                 if ($frame->is_text_node()) {
-                    $decorator = "Text";
-                    $reflower = "Text";
+                    $decorator .= "\Text";
+                    $reflower .= "\Text";
                 } else {
-                    $enable_css_float = $dompdf->get_option("enable_css_float");
+                    $enable_css_float = $dompdf->getConfig()->getEnableCssFloat();
                     if ($enable_css_float && $style->float !== "none") {
-                        $decorator = "Block";
-                        $reflower = "Block";
+                        $decorator .= "\Block";
+                        $reflower .= "\Block";
                     } else {
-                        $decorator = "Inline";
-                        $reflower = "Inline";
+                        $decorator .= "\Inline";
+                        $reflower .= "\Inline";
                     }
                 }
                 break;
 
             case "table":
-                $positioner = "Block";
-                $decorator = "Table";
-                $reflower = "Table";
+                $positioner .= "\Block";
+                $decorator .= "\Table";
+                $reflower .= "\Table";
                 break;
 
             case "inline-table":
-                $positioner = "Inline";
-                $decorator = "Table";
-                $reflower = "Table";
+                $positioner .= "\Inline";
+                $decorator .= "\Table";
+                $reflower .= "\Table";
                 break;
 
             case "table-row-group":
             case "table-header-group":
             case "table-footer-group":
-                $positioner = "Null";
-                $decorator = "Table_Row_Group";
-                $reflower = "Table_Row_Group";
+                $positioner .= "\Null";
+                $decorator .= "\Table\Group";
+                $reflower .= "\Table\Group";
                 break;
 
             case "table-row":
-                $positioner = "Null";
-                $decorator = "Table_Row";
-                $reflower = "Table_Row";
+                $positioner .= "\Null";
+                $decorator .= "\Table\Row";
+                $reflower .= "\Table\Row";
                 break;
 
             case "table-cell":
-                $positioner = "Table_Cell";
-                $decorator = "Table_Cell";
-                $reflower = "Table_Cell";
+                $positioner .= "\Table\Cell";
+                $decorator .= "\Table\Cell";
+                $reflower .= "\Table\Cell";
                 break;
 
             case "list-item":
-                $positioner = "Block";
-                $decorator = "Block";
-                $reflower = "Block";
+                $positioner .= "\Block";
+                $decorator .= "\Block";
+                $reflower .= "\Block";
                 break;
 
             case "-dompdf-list-bullet":
                 if ($style->list_style_position === "inside") {
-                    $positioner = "Inline";
+                    $positioner .= "\Inline";
                 } else {
-                    $positioner = "List_Bullet";
+                    $positioner .= "\BulletList";
                 }
 
                 if ($style->list_style_image !== "none") {
-                    $decorator = "List_Bullet_Image";
+                    $decorator .= "\BulletList\Image";
                 } else {
-                    $decorator = "List_Bullet";
+                    $decorator .= "\BulletList";
                 }
 
-                $reflower = "List_Bullet";
+                $reflower .= "\BulletList";
                 break;
 
             case "-dompdf-image":
-                $positioner = "Inline";
-                $decorator = "Image";
-                $reflower = "Image";
+                $positioner .= "\Inline";
+                $decorator .= "\Image";
+                $reflower .= "\Image";
                 break;
 
             case "-dompdf-br":
-                $positioner = "Inline";
-                $decorator = "Inline";
-                $reflower = "Inline";
+                $positioner .= "\Inline";
+                $decorator .= "\Inline";
+                $reflower .= "\Inline";
                 break;
 
             default:
             // FIXME: should throw some sort of warning or something?
             case "none":
-                $positioner = "Null";
-                $decorator = "Null";
-                $reflower = "Null";
+                $positioner .= "\Null";
+                $decorator .= "\Null";
+                $reflower .= "\Null";
                 break;
         }
 
         // Handle CSS position
         $position = $style->position;
 
-        if ($position === "absolute") {
-            $positioner = "Absolute";
-        } else if ($position === "fixed") {
-            $positioner = "Fixed";
-        }
-
         $node = $frame->get_node();
 
         // Handle nodeName
         if ($node->nodeName === "img") {
             $style->display = "-dompdf-image";
-            $decorator = "Image";
-            $reflower = "Image";
+            //$decorator .= "\Image";
+            //$reflower .= "\Image";
         }
 
-        $positioner .= "_Positioner";
-        $decorator .= "_Frame_Decorator";
-        $reflower .= "_Frame_Reflower";
+        $positioner .= "\Positioner";
+        $decorator .= "\Decorator";
+        $reflower .= "\Reflower";
+        
+        if ($position === "absolute") {
+            $positioner = "\DOMPDF\Positioner\Absolute";
+        } else if ($position === "fixed") {
+            $positioner = "\DOMPDF\Positioner\Fixed";
+        }
 
         $deco = new $decorator($frame, $dompdf);
 

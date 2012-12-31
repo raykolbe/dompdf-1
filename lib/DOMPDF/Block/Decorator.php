@@ -225,7 +225,7 @@ class Decorator extends FrameDecorator
         $this->_line_boxes[$this->_cl]->br = $br;
         $y = $this->_line_boxes[$this->_cl]->y + $this->_line_boxes[$this->_cl]->h;
 
-        $new_line = new Line_Box($this, $y);
+        $new_line = new LineBox($this, $y);
 
         $this->_line_boxes[++$this->_cl] = $new_line;
     }

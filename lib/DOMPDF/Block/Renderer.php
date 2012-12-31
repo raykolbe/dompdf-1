@@ -4,6 +4,7 @@ namespace DOMPDF\Block;
 
 use DOMPDF\Renderer\AbstractRenderer;
 use DOMPDF\Frame\Frame;
+use DOMPDF\Frame\Decorator as FrameDecorator;
 
 /**
  * @package dompdf
@@ -60,7 +61,7 @@ class Renderer extends AbstractRenderer
         $this->_render_outline($frame);
     }
 
-    protected function _render_border(Frame_Decorator $frame, $corner_style = "bevel")
+    protected function _render_border(FrameDecorator $frame, $corner_style = "bevel")
     {
         $style = $frame->get_style();
         $bbox = $frame->get_border_box();
@@ -142,7 +143,7 @@ class Renderer extends AbstractRenderer
         }
     }
 
-    protected function _render_outline(Frame_Decorator $frame, $corner_style = "bevel")
+    protected function _render_outline(FrameDecorator $frame, $corner_style = "bevel")
     {
         $style = $frame->get_style();
 

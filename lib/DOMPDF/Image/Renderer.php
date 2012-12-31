@@ -90,7 +90,7 @@ class Renderer extends BlockRenderer
         $src = $frame->get_image_url();
         $alt = null;
 
-        if (ImageCache::is_broken($src) &&
+        if ($this->_dompdf->getConfig()->getResourceDirectory() . '/broken_image.png' == $src &&
                 $alt = $frame->get_node()->getAttribute("alt")) {
             $font = $style->font_family;
             $size = $style->font_size;

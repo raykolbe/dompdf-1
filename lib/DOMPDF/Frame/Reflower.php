@@ -5,6 +5,7 @@ namespace DOMPDF\Frame;
 use DOMPDF\Frame\Frame;
 use DOMPDF\Frame\Factory as FrameFactory;
 use DOMPDF\Block\Decorator as BlockDecorator;
+use DOMPDF\Css\Style;
 use DOMPDF\Number\IsPercent;
 use DOMPDF\String\UniChr;
 

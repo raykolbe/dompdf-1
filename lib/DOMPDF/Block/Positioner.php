@@ -35,7 +35,7 @@ class Positioner extends AbstractPositioner
         if ($p) {
             $float = $style->float;
 
-            $enable_css_float = $frame->get_dompdf()->get_option("enable_css_float");
+            $enable_css_float = $frame->get_dompdf()->getConfig()->getEnableCssFloat();
             if (!$enable_css_float || !$float || $float === "none") {
                 $p->add_line(true);
             }

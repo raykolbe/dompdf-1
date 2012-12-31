@@ -9,6 +9,8 @@ use DOMPDF\Renderer\PHPEvaluator;
 use DOMPDF\Exception;
 use DOMPDF\Gd\ImageSize;
 
+use Cpdf\Cpdf as CpdfLib;
+
 /**
  * @package dompdf
  * @link    http://www.dompdf.com/
@@ -18,8 +20,6 @@ use DOMPDF\Gd\ImageSize;
  * @author  Fabien Ménager <fabien.menager@gmail.com>
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
-// FIXME: Need to sanity check inputs to this class
-require_once(DOMPDF_LIB_DIR . "/class.pdf.php");
 
 /**
  * PDF rendering interface
@@ -188,11 +188,11 @@ class CPDF implements Canvas
 
         $this->_dompdf = $dompdf;
 
-        $this->_pdf = new Cpdf(
+        $this->_pdf = new CpdfLib(
                         $size,
-                        $dompdf->get_option("enable_unicode"),
-                        $dompdf->get_option("font_cache"),
-                        $dompdf->get_option("temp_dir")
+                        $dompdf->getConfig()->getEnableUnicode(),
+                        $dompdf->getConfig()->getFontCacheDirectory(),
+                        $dompdf->getConfig()->getTemporaryDirectory()
         );
 
         $this->_pdf->addInfo("Creator", "DOMPDF");
@@ -548,7 +548,7 @@ class CPDF implements Canvas
         if ($im) {
             imageinterlace($im, false);
 
-            $tmp_dir = $this->_dompdf->get_option("temp_dir");
+            $tmp_dir = $this->_dompdf->getConfig()->getTemporaryDirectory();
             $tmp_name = tempnam($tmp_dir, "{$image_type}dompdf_img_");
             @unlink($tmp_name);
             $filename = "$tmp_name.png";
@@ -765,7 +765,7 @@ class CPDF implements Canvas
     {
         $this->_pdf->selectFont($font);
 
-        $unicode = $this->_dompdf->get_option("enable_unicode");
+        $unicode = $this->_dompdf->getConfig()->getEnableUnicode();
         if (!$unicode) {
             $text = mb_convert_encoding($text, 'Windows-1252', 'UTF-8');
         }
@@ -782,7 +782,7 @@ class CPDF implements Canvas
     {
         $this->_pdf->selectFont($font);
 
-        $ratio = $this->_dompdf->get_option("font_height_ratio");
+        $ratio = $this->_dompdf->getConfig()->getFontHeightRatio();
         return $this->_pdf->getFontHeight($size) * $ratio;
     }
 
@@ -795,7 +795,7 @@ class CPDF implements Canvas
 
     public function get_font_baseline($font, $size)
     {
-        $ratio = $this->_dompdf->get_option("font_height_ratio");
+        $ratio = $this->_dompdf->getConfig()->getFontHeightRatio();
         return $this->get_font_height($font, $size) / $ratio;
     }
 

@@ -54,7 +54,7 @@ class Decorator extends FrameDecorator
                         $url, $dompdf->get_protocol(), $dompdf->get_host(), $dompdf->get_base_path(), $dompdf
         );
 
-        if (ImageCache::is_broken($this->_image_url) &&
+        if ($dompdf->getConfig()->getResourceDirectory() . '/broken_image.png' == $this->_image_url &&
                 $alt = $frame->get_node()->getAttribute("alt")) {
             $style = $frame->get_style();
             $style->width = (4 / 3) * FontMetrics::get_text_width($alt, $style->font_family, $style->font_size, $style->word_spacing);
